@@ -49,9 +49,9 @@ export default function RequestList({ requests: initialRequests, webhookId, defa
             <div className="flex-1 overflow-y-auto">
                 {requests.length === 0 ? (
                     // Task 10.7: Empty state
-                    <div className="text-center p-8 text-gray-500">
+                    <div className="text-center p-8 text-zinc-500 dark:text-zinc-400">
                         <p className="text-sm font-medium">No requests yet</p>
-                        <p className="text-xs mt-1 text-gray-400">Send a request to this webhook URL to see it here.</p>
+                        <p className="text-xs mt-1 text-zinc-400 dark:text-zinc-500">Send a request to this webhook URL to see it here.</p>
                     </div>
                 ) : (
                     requests.map((req) => {
@@ -70,14 +70,14 @@ export default function RequestList({ requests: initialRequests, webhookId, defa
                                     <span className={`px-2 py-0.5 text-xs font-bold rounded ${getMethodColor(req.method)}`}>
                                         {req.method}
                                     </span>
-                                    <span className="text-xs text-gray-500">
+                                    <span className="text-xs text-zinc-500 dark:text-zinc-400">
                                         {date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}
                                     </span>
                                 </div>
-                                <div className="text-xs text-gray-400 truncate">
+                                <div className="text-xs text-zinc-500 dark:text-zinc-400 truncate">
                                     {date.toLocaleDateString()}
                                 </div>
-                                <div className="text-xs text-gray-400 truncate mt-0.5">
+                                <div className="text-xs text-zinc-500 dark:text-zinc-400 truncate mt-0.5">
                                     {req.sourceIp}
                                 </div>
                             </Link>
