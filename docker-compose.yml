@@ -18,10 +18,15 @@ services:
 
   app:
     image: novan921/hooky:latest
-    env_file:
-      - .env
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-hooky}
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET:-change-me-in-production}
+      NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost:3000}
+      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+      ANONYMOUS_RETENTION_DAYS: ${ANONYMOUS_RETENTION_DAYS:-7}
+      ANONYMOUS_SESSION_EXPIRY_DAYS: ${ANONYMOUS_SESSION_EXPIRY_DAYS:-6}
+      MAX_REQUEST_BODY_SIZE_MB: ${MAX_REQUEST_BODY_SIZE_MB:-50}
+      CLEANUP_SCHEDULE: ${CLEANUP_SCHEDULE:-0 0 * * *}
     ports:
       - "${PORT:-3000}:3000"
     depends_on:
