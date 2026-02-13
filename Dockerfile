@@ -1,25 +1,24 @@
 # Task 19.1: Multi-stage Dockerfile for production builds
 # Stage 1: Install dependencies
-FROM node:20-alpine AS deps
-RUN apk add --no-cache libc6-compat
+FROM oven/bun:1-alpine AS deps
 WORKDIR /app
 
-COPY package.json package-lock.json* bun.lock* ./
-RUN npm ci
+COPY package.json bun.lockb ./
+RUN bun install --frozen-lockfile
 
 # Stage 2: Build the application
-FROM node:20-alpine AS builder
+FROM oven/bun:1-alpine AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Generate Prisma client
-RUN npx prisma generate
+RUN bunx prisma generate
 
-RUN npm run build
+RUN bun run build
 
 # Stage 3: Production runner
-FROM node:20-alpine AS runner
+FROM oven/bun:1-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
@@ -41,11 +40,14 @@ COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 # Copy custom server
 COPY --from=builder /app/server.ts ./server.ts
 
+# Copy entrypoint script
+COPY --from=builder /app/docker-entrypoint.sh ./docker-entrypoint.sh
+RUN chmod +x ./docker-entrypoint.sh
+
 USER nextjs
 
 EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-# Use the custom server with Socket.io
-CMD ["node", "server.js"]
+ENTRYPOINT ["./docker-entrypoint.sh"]

@@ -8,7 +8,10 @@
     "start": "NODE_ENV=production bun server.ts",
     "lint": "eslint",
     "test": "vitest",
-    "test:run": "vitest run"
+    "test:run": "vitest run",
+    "docker:build": "docker build -t novan921/hooky:latest -t novan921/hooky:$(node -p \"require('./package.json').version\") .",
+    "docker:push": "docker push novan921/hooky:latest && docker push novan921/hooky:$(node -p \"require('./package.json').version\")",
+    "docker:build-push": "bun run docker:build && bun run docker:push"
   },
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",
