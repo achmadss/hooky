@@ -13,7 +13,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Generate Prisma client
-RUN bunx prisma generate
+RUN DATABASE_URL="postgresql://localhost:5432/postgres" bunx prisma generate
 
 RUN bun run build
 
