@@ -18,19 +18,13 @@ A real-time webhook inspection tool for debugging and testing webhook integratio
 Deploy with Docker in under 5 minutes:
 
 ```bash
-# 1. Download docker-compose.yml from GitHub
+# 1. Download docker-compose.yml and .env.example from GitHub
 curl -o docker-compose.yml https://raw.githubusercontent.com/achmadss/hooky/main/docker-compose.yml
+curl -o .env https://raw.githubusercontent.com/achmadss/hooky/main/.env.example
 
-# 2. Create .env file
-cat > .env << EOF
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=your_secure_password
-POSTGRES_DB=hooky
-DATABASE_URL=postgresql://postgres:your_secure_password@db:5432/hooky
-NEXTAUTH_SECRET=your_generated_secret
-NEXTAUTH_URL=http://localhost:3000
-NEXT_PUBLIC_APP_URL=http://localhost:3000
-EOF
+# 2. Edit .env with your values
+#    - Set NEXTAUTH_SECRET to a secure random string
+#    - Update DATABASE_URL if using a different PostgreSQL setup
 
 # 3. Pull and start
 docker compose up -d
@@ -53,12 +47,14 @@ docker pull novan921/hooky:latest
 | Variable | Default | Description |
 |---|---|---|
 | `DATABASE_URL` | required | PostgreSQL connection string |
+| `PORT` | `3000` | Server port |
 | `NEXTAUTH_SECRET` | required | Secret for NextAuth.js JWT signing |
 | `NEXTAUTH_URL` | `http://localhost:3000` | Base URL for auth callbacks |
 | `NEXT_PUBLIC_APP_URL` | `http://localhost:3000` | Public app URL (used in webhook URLs) |
 | `ANONYMOUS_RETENTION_DAYS` | `7` | Days before anonymous requests are soft-deleted |
 | `ANONYMOUS_SESSION_EXPIRY_DAYS` | `6` | Days before anonymous session cookie expires |
 | `MAX_REQUEST_BODY_SIZE_MB` | `50` | Maximum request body size in MB |
+| `CLEANUP_SCHEDULE` | `0 0 * * *` | Cron expression for cleanup job |
 
 ## Contributing
 
