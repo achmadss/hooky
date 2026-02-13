@@ -129,3 +129,17 @@ Captures any HTTP request to the webhook. Returns the configured response (defau
 3. View request inspector at `/webhooks/:id`
 4. Configure custom response per webhook
 5. Enable/disable webhooks as needed
+
+## Architecture
+
+- **Framework**: Next.js 16 with App Router
+- **Runtime**: Bun
+- **Database**: PostgreSQL + Prisma ORM with soft-delete
+- **Real-time**: Socket.io (custom server)
+- **Auth**: NextAuth.js (credentials provider)
+- **Cleanup**: node-cron job for data retention
+- **Deployment**: Docker multi-stage build
+
+### Soft-Delete Architecture
+
+All data uses soft-delete (`deletedAt` timestamp). Anonymous request data is soft-deleted after 7 days via a scheduled job. Hard deletion never occurs automatically — data is recoverable.

@@ -18,7 +18,10 @@ A real-time webhook inspection tool for debugging and testing webhook integratio
 Deploy with Docker in under 5 minutes:
 
 ```bash
-# 1. Create .env file
+# 1. Download docker-compose.yml from GitHub
+curl -o docker-compose.yml https://raw.githubusercontent.com/achmadss/hooky/main/docker-compose.yml
+
+# 2. Create .env file
 cat > .env << EOF
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=your_secure_password
@@ -29,10 +32,10 @@ NEXTAUTH_URL=http://localhost:3000
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 EOF
 
-# 2. Pull and start
+# 3. Pull and start
 docker compose up -d
 
-# 3. Visit http://localhost:3000
+# 4. Visit http://localhost:3000
 ```
 
 That's it! Migrations run automatically on startup.
@@ -56,16 +59,6 @@ docker pull novan921/hooky:latest
 | `ANONYMOUS_RETENTION_DAYS` | `7` | Days before anonymous requests are soft-deleted |
 | `ANONYMOUS_SESSION_EXPIRY_DAYS` | `6` | Days before anonymous session cookie expires |
 | `MAX_REQUEST_BODY_SIZE_MB` | `50` | Maximum request body size in MB |
-
-## Architecture
-
-- **Framework**: Next.js 16 with App Router
-- **Runtime**: Bun
-- **Database**: PostgreSQL + Prisma ORM with soft-delete
-- **Real-time**: Socket.io (custom server)
-- **Auth**: NextAuth.js (credentials provider)
-- **Cleanup**: node-cron job for data retention
-- **Deployment**: Docker multi-stage build
 
 ## Contributing
 
