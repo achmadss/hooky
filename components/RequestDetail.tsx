@@ -223,7 +223,7 @@ function HeadersExplorer({ headers }: { headers: Record<string, string> }) {
                             {entries.map(([key, value]) => (
                                 <tr key={key} className="hover:bg-gray-50/50 dark:hover:bg-zinc-800/20">
                                     <td className="px-4 py-2 font-mono text-gray-600 dark:text-gray-400 break-all">{key}</td>
-                                    <td className="px-4 py-2 font-mono break-all">{value}</td>
+                                    <td className="px-4 py-2 font-mono text-zinc-900 dark:text-zinc-300 break-all">{value}</td>
                                     <td className="px-2 py-2"><CopyButton text={`${key}: ${value}`} /></td>
                                 </tr>
                             ))}
