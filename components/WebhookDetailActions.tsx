@@ -137,8 +137,8 @@ export default function WebhookDetailActions({
                     className={cn(
                         "p-2 rounded-md transition-colors",
                         isEnabled
-                            ? "text-zinc-500 hover:text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-900/20"
-                            : "text-zinc-500 hover:text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20"
+                            ? "text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/20"
+                            : "text-green-500 hover:bg-green-50 dark:hover:bg-green-900/20"
                     )}
                     title={isEnabled ? "Disable Webhook" : "Enable Webhook"}
                 >
