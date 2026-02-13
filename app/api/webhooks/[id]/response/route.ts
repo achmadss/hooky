@@ -14,7 +14,7 @@ export async function GET(_req: NextRequest, { params }: Params) {
   const config = await prisma.responseConfig.findUnique({ where: { webhookId: id } })
   // Task 6.6: Return default response info when no config exists
   if (!config) {
-    return NextResponse.json({ statusCode: 200, headers: {}, body: null, isDefault: true })
+    return NextResponse.json({ statusCode: 200, headers: {}, body: null, contentType: 'application/json', isDefault: true })
   }
   return NextResponse.json({ ...config, isDefault: false })
 }
@@ -26,10 +26,11 @@ export async function PUT(request: NextRequest, { params }: Params) {
   if (error) return error
 
   const body = await request.json().catch(() => ({}))
-  const { statusCode, headers, body: responseBody } = body as {
+  const { statusCode, headers, body: responseBody, contentType } = body as {
     statusCode?: number
     headers?: Record<string, string>
     body?: string
+    contentType?: string
   }
 
   // Task 6.3: Validate status code
@@ -44,11 +45,13 @@ export async function PUT(request: NextRequest, { params }: Params) {
       statusCode: statusCode ?? 200,
       headers: headers ?? {},
       body: responseBody ?? null,
+      contentType: contentType ?? 'application/json',
     },
     update: {
       ...(statusCode !== undefined && { statusCode }),
       ...(headers !== undefined && { headers }),
       ...(responseBody !== undefined && { body: responseBody }),
+      ...(contentType !== undefined && { contentType }),
     },
   })
   return NextResponse.json(config)

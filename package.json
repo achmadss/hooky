@@ -11,6 +11,7 @@
     "test:run": "vitest run"
   },
   "dependencies": {
+    "@monaco-editor/react": "^4.7.0",
     "@prisma/adapter-pg": "^7.4.0",
     "@prisma/client": "^7.4.0",
     "@types/node-cron": "^3.0.11",

@@ -1,11 +1,14 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import CodeEditor from './CodeEditor'
+import { HTTP_STATUS_CODES, CONTENT_TYPES, type ContentType } from '@/lib/utils'
 
 interface ResponseConfig {
     statusCode: number
     headers: Record<string, string>
     body: string | null
+    contentType: string
     isDefault?: boolean
 }
 
@@ -19,8 +22,8 @@ export default function ResponseConfigPanel({ webhookId, isOwner }: ResponseConf
     const [statusCode, setStatusCode] = useState(200)
     const [headers, setHeaders] = useState<{ key: string; value: string }[]>([{ key: '', value: '' }])
     const [body, setBody] = useState('')
-    const [statusError, setStatusError] = useState<string | null>(null) // Task 12.2
-    const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null) // Task 12.7
+    const [contentType, setContentType] = useState<ContentType>('application/json')
+    const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
     const [loading, setLoading] = useState(false)
     const [fetching, setFetching] = useState(true)
 
@@ -31,6 +34,7 @@ export default function ResponseConfigPanel({ webhookId, isOwner }: ResponseConf
             .then((data: ResponseConfig) => {
                 setStatusCode(data.statusCode)
                 setBody(data.body ?? '')
+                setContentType((data.contentType as ContentType) || 'application/json')
                 const headerEntries = Object.entries(data.headers || {}).map(([k, v]) => ({ key: k, value: v }))
                 setHeaders(headerEntries.length > 0 ? [...headerEntries, { key: '', value: '' }] : [{ key: '', value: '' }])
             })
@@ -53,18 +57,6 @@ export default function ResponseConfigPanel({ webhookId, isOwner }: ResponseConf
         )
     }
 
-    // Task 12.2: Status code validation
-    function validateStatusCode(val: number): string | null {
-        if (isNaN(val) || val < 100 || val > 599) return 'Must be between 100 and 599'
-        return null
-    }
-
-    function handleStatusCodeChange(val: string) {
-        const num = parseInt(val)
-        setStatusCode(num)
-        setStatusError(validateStatusCode(num))
-    }
-
     // Task 12.3: Headers editor - update a header row
     function updateHeader(index: number, field: 'key' | 'value', value: string) {
         const updated = [...headers]
@@ -83,11 +75,25 @@ export default function ResponseConfigPanel({ webhookId, isOwner }: ResponseConf
         setHeaders(headers.filter((_, i) => i !== index))
     }
 
+    function handleFormat() {
+        try {
+            if (contentType === 'application/json') {
+                const formatted = JSON.stringify(JSON.parse(body), null, 2)
+                setBody(formatted)
+            } else if (contentType === 'application/xml') {
+                const formatted = body
+                    .replace(/>\s+</g, '><')
+                    .replace(/^(\s*)/gm, (_, spaces) => '  '.repeat(Math.floor(spaces.length / 2)))
+                setBody(formatted)
+            }
+            setMessage({ type: 'success', text: 'Formatted successfully' })
+        } catch {
+            setMessage({ type: 'error', text: 'Invalid content - could not format' })
+        }
+    }
+
     // Task 12.5: Save functionality with API integration
     async function handleSave() {
-        const err = validateStatusCode(statusCode)
-        if (err) { setStatusError(err); return }
-
         setLoading(true)
         setMessage(null)
 
@@ -99,7 +105,7 @@ export default function ResponseConfigPanel({ webhookId, isOwner }: ResponseConf
             const res = await fetch(`/api/webhooks/${webhookId}/response`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ statusCode, headers: headersObj, body: body || null }),
+                body: JSON.stringify({ statusCode, headers: headersObj, body: body || null, contentType }),
             })
             if (res.ok) {
                 setMessage({ type: 'success', text: 'Response configuration saved' })
@@ -123,6 +129,7 @@ export default function ResponseConfigPanel({ webhookId, isOwner }: ResponseConf
             setStatusCode(200)
             setHeaders([{ key: '', value: '' }])
             setBody('')
+            setContentType('application/json')
             setMessage({ type: 'success', text: 'Reset to defaults' })
         } catch {
             setMessage({ type: 'error', text: 'Failed to reset' })
@@ -142,15 +149,17 @@ export default function ResponseConfigPanel({ webhookId, isOwner }: ResponseConf
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Status Code
                 </label>
-                <input
-                    type="number"
+                <select
                     value={statusCode}
-                    onChange={(e) => handleStatusCodeChange(e.target.value)}
-                    min={100}
-                    max={599}
-                    className="w-32 px-3 py-1.5 rounded-lg border border-gray-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                {statusError && <p className="text-xs text-red-500 mt-1">{statusError}</p>}
+                    onChange={(e) => setStatusCode(parseInt(e.target.value))}
+                    className="w-48 px-3 py-1.5 rounded-lg border border-gray-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                    {HTTP_STATUS_CODES.map((code) => (
+                        <option key={code.value} value={code.value}>
+                            {code.label}
+                        </option>
+                    ))}
+                </select>
             </div>
 
             {/* Headers Editor */}
@@ -190,17 +199,43 @@ export default function ResponseConfigPanel({ webhookId, isOwner }: ResponseConf
                 </div>
             </div>
 
-            {/* Response Body */}
+            {/* Content Type */}
             <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Response Body
+                    Content Type
                 </label>
-                <textarea
+                <select
+                    value={contentType}
+                    onChange={(e) => setContentType(e.target.value as ContentType)}
+                    className="w-48 px-3 py-1.5 rounded-lg border border-gray-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                    {CONTENT_TYPES.map((ct) => (
+                        <option key={ct.value} value={ct.value}>
+                            {ct.label}
+                        </option>
+                    ))}
+                </select>
+            </div>
+
+            {/* Response Body */}
+            <div>
+                <div className="flex items-center justify-between mb-1">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        Response Body
+                    </label>
+                    <button
+                        type="button"
+                        onClick={handleFormat}
+                        className="text-xs px-2 py-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 border border-gray-300 dark:border-zinc-600 rounded hover:bg-gray-50 dark:hover:bg-zinc-700 transition-colors"
+                    >
+                        Format
+                    </button>
+                </div>
+                <CodeEditor
                     value={body}
-                    onChange={(e) => setBody(e.target.value)}
-                    placeholder="Optional response body..."
-                    rows={6}
-                    className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 text-gray-900 dark:text-white text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                    onChange={setBody}
+                    contentType={contentType}
+                    onFormat={handleFormat}
                 />
             </div>
 
@@ -215,7 +250,7 @@ export default function ResponseConfigPanel({ webhookId, isOwner }: ResponseConf
             <div className="flex gap-3">
                 <button
                     onClick={handleSave}
-                    disabled={loading || !!statusError}
+                    disabled={loading}
                     className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white text-sm font-medium rounded-lg transition-colors"
                 >
                     {loading ? 'Saving...' : 'Save'}

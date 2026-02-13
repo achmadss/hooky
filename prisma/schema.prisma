@@ -65,6 +65,7 @@ model ResponseConfig {
   statusCode    Int       @default(200)
   headers       Json      @default("{}")
   body          String?
+  contentType   String    @default("application/json")
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   deletedAt     DateTime? // Soft-delete field
