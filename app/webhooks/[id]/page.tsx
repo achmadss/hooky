@@ -6,7 +6,6 @@ import prisma from '@/lib/db'
 import RequestList from '@/components/RequestList'
 import RequestDetail from '@/components/RequestDetail'
 import WebhookUrlDisplay from '@/components/WebhookUrlDisplay'
-import ResponseConfigPanel from '@/components/ResponseConfigPanel'
 import AnonymousBanner from '@/components/AnonymousBanner'
 import WebhookDetailActions from '@/components/WebhookDetailActions'
 import Link from 'next/link'
@@ -93,7 +92,7 @@ export default async function WebhookDetailPage({ params, searchParams }: PagePr
                     isOwner={isOwner}
                 />
 
-                {/* Task 13.3: Tabs for Request Inspector and Response Config */}
+                {/* Task 13.3: Tab for Request Inspector */}
                 <div className="flex gap-1 shrink-0">
                     <Link
                         href={`/webhooks/${id}${requestId ? `?requestId=${requestId}` : ''}`}
@@ -103,48 +102,28 @@ export default async function WebhookDetailPage({ params, searchParams }: PagePr
                     >
                         Inspector
                     </Link>
-                    <Link
-                        href={`/webhooks/${id}?tab=response`}
-                        className={`px-3 py-1.5 text-sm rounded-md transition-colors ${activeTab === 'response'
-                            ? 'bg-gray-100 dark:bg-zinc-800 text-gray-900 dark:text-white font-medium'
-                            : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'}`}
-                    >
-                        Response
-                    </Link>
                 </div>
             </div>
 
             {/* Task 10.8 / 16.7 / 16.8: Anonymous retention warning with Sign Up CTA */}
             {isAnonymousOwner && <AnonymousBanner />}
 
-            {/* Content */}
-            {activeTab === 'response' ? (
-                <div className="flex-1 overflow-y-auto">
-                    <div className="max-w-2xl mx-auto py-6 px-4">
-                        <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Response Configuration</h2>
-                        {/* Task 12.8: Hidden for anonymous users */}
-                        <div className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-lg">
-                            <ResponseConfigPanel webhookId={id} isOwner={isOwner} />
-                        </div>
-                    </div>
+            {/* Request Inspector layout */}
+            <div className="flex flex-1 overflow-hidden">
+                {/* Sidebar - Request List */}
+                <div className="w-full md:w-80 border-r border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex flex-col shrink-0">
+                    <RequestList requests={requests} webhookId={id} defaultSelectedId={selectedRequest?.id} />
                 </div>
-            ) : (
-                // Request Inspector layout
-                <div className="flex flex-1 overflow-hidden">
-                    {/* Sidebar - Request List */}
-                    <div className="w-full md:w-80 border-r border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex flex-col shrink-0">
-                        <RequestList requests={requests} webhookId={id} defaultSelectedId={selectedRequest?.id} />
-                    </div>
 
-                    {/* Main Content - Request Detail (hidden on mobile unless selected) */}
-                    <div className={`flex-1 flex flex-col overflow-hidden ${requestId ? 'flex' : 'hidden md:flex'}`}>
-                        <div className="flex-1 overflow-y-auto p-4 sm:p-6">
-                            {selectedRequest ? (
-                                <RequestDetail request={selectedRequest} webhookToken={(selectedRequest as any).webhookToken || webhook.token} />
-                            ) : (
-                                <div className="h-full flex flex-col items-center justify-center text-gray-400">
-                                    <svg className="w-16 h-16 mb-4 text-gray-200 dark:text-zinc-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 6h16M4 12h16m-7 6h7" />
+                {/* Main Content - Request Detail (hidden on mobile unless selected) */}
+                <div className={`flex-1 flex flex-col overflow-hidden ${requestId ? 'flex' : 'hidden md:flex'}`}>
+                    <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+                        {selectedRequest ? (
+                            <RequestDetail request={selectedRequest} webhookToken={(selectedRequest as any).webhookToken || webhook.token} />
+                        ) : (
+                            <div className="h-full flex flex-col items-center justify-center text-gray-400">
+                                <svg className="w-16 h-16 mb-4 text-gray-200 dark:text-zinc-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 6h16M4 12h16m-7 6h7" />
                                     </svg>
                                     <p className="text-sm">Select a request to view details</p>
                                 </div>
@@ -152,7 +131,6 @@ export default async function WebhookDetailPage({ params, searchParams }: PagePr
                         </div>
                     </div>
                 </div>
-            )}
         </div>
     )
 }
