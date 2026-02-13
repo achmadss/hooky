@@ -1,0 +1,49 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      # Mount source for hot reload (excludes node_modules - container installs its own for Linux binaries)
+      - .:/app
+      - /app/node_modules
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/hooky
+      - NEXT_PUBLIC_APP_URL=http://localhost:3000
+      - NEXTAUTH_SECRET=dev-secret-change-in-production
+      - NEXTAUTH_URL=http://localhost:3000
+      - ANONYMOUS_RETENTION_DAYS=7
+      - ANONYMOUS_SESSION_EXPIRY_DAYS=6
+      - MAX_REQUEST_BODY_SIZE_MB=50
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - hooky-dev
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: hooky
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d hooky"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - hooky-dev
+
+volumes:
+  postgres_dev_data:
+
+networks:
+  hooky-dev:
+    driver: bridge
