@@ -56,27 +56,24 @@ function createPrismaClient() {
           return query(args)
         },
         async delete({ args, model }) {
+          const table = (model as string).charAt(0).toLowerCase() + (model as string).slice(1)
           if (isSoftDelete(model)) {
             // Redirect to soft-delete via base client (avoids recursive extension)
-            const table = model.charAt(0).toLowerCase() + model.slice(1)
             return (base as any)[table].update({
               where: args.where,
               data: { deletedAt: new Date() },
             })
           }
-          // Hard-delete for non-soft-delete models (none in this app)
-          const table = model.charAt(0).toLowerCase() + model.slice(1)
           return (base as any)[table].delete({ where: args.where })
         },
         async deleteMany({ args, model }) {
+          const table = (model as string).charAt(0).toLowerCase() + (model as string).slice(1)
           if (isSoftDelete(model)) {
-            const table = model.charAt(0).toLowerCase() + model.slice(1)
             return (base as any)[table].updateMany({
               where: { deletedAt: null, ...args.where },
               data: { deletedAt: new Date() },
             })
           }
-          const table = model.charAt(0).toLowerCase() + model.slice(1)
           return (base as any)[table].deleteMany({ where: args.where })
         },
       },

@@ -13,7 +13,7 @@ datasource db {
 model User {
   id            String    @id @default(uuid())
   email         String    @unique
-  passwordHash  String
+  passwordHash  String?   // Nullable to support OAuth-only accounts
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   deletedAt     DateTime? // Soft-delete field
