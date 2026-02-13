@@ -46,6 +46,9 @@ docker pull novan921/hooky:latest
 
 | Variable | Default | Description |
 |---|---|---|
+| `POSTGRES_USER` | `postgres` | PostgreSQL username (Docker) |
+| `POSTGRES_PASSWORD` | `postgres` | PostgreSQL password (Docker) |
+| `POSTGRES_DB` | `hooky` | PostgreSQL database name (Docker) |
 | `DATABASE_URL` | required | PostgreSQL connection string |
 | `PORT` | `3000` | Server port |
 | `NEXTAUTH_SECRET` | required | Secret for NextAuth.js JWT signing |
