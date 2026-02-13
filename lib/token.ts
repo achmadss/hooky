@@ -1,9 +1,8 @@
-import { randomBytes } from 'crypto'
-
 // Task 3.2 / 21.1: Generate a 16-char alphanumeric random token
 export function generateToken(): string {
   const chars = 'abcdefghijklmnopqrstuvwxyz0123456789'
-  const bytes = randomBytes(16)
+  const bytes = new Uint8Array(16)
+  crypto.getRandomValues(bytes)
   return Array.from(bytes, (b) => chars[b % chars.length]).join('')
 }
 

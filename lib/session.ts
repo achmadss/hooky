@@ -1,5 +1,5 @@
 import { cookies } from 'next/headers'
-import { randomBytes } from 'crypto'
+
 
 export const ANON_SESSION_COOKIE = 'hooky_anon_session'
 
@@ -11,7 +11,9 @@ const SESSION_EXPIRY_DAYS = parseInt(
 
 // Task 2.3 / 2.8: Generate a new anonymous session ID
 export function generateSessionId(): string {
-  return randomBytes(16).toString('hex')
+  const array = new Uint8Array(16)
+  crypto.getRandomValues(array)
+  return Array.from(array, (byte) => byte.toString(16).padStart(2, '0')).join('')
 }
 
 // Task 2.8 / 2.10: Get the anonymous session ID from the cookie (server-side)
