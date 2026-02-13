@@ -29,6 +29,9 @@ This change introduces a complete webhook mock and inspection system:
 - `response-configuration`: Configure custom HTTP responses per webhook including status code, headers, and body with sensible defaults.
 - `authentication`: Anonymous users are auto-redirected to newly created webhook detail page on homepage visit. Authenticated users see full management dashboard. Includes webhook claiming workflow when anonymous users log in.
 - `request-inspector-ui`: Web interface for viewing captured requests with pretty-formatted payloads, raw view, and metadata exploration. Anonymous users see simplified UI without management features. Includes authentication UI and webhook claiming workflow.
+- `dashboard-search`: Authenticated users can search and paginate through their webhooks from the dashboard. Supports filtering by token or name with server-side paging.
+- `ui-notification`: Toast notification system for user feedback on actions like save, delete, copy, and errors.
+- `webhook-detail-management`: Users can edit webhook details including name and description from the webhook detail page.
 
 ### Modified Capabilities
 

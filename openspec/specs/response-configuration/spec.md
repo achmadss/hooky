@@ -1,7 +1,7 @@
 # response-configuration Specification
 
 ## Purpose
-TBD - created by archiving change hooky. Update Purpose after archive.
+Allows webhook owners to customize the HTTP response that their webhook returns when triggered. Supports status codes, headers, body content, and content type selection.
 ## Requirements
 ### Requirement: Default response behavior
 The system SHALL return a default response when no custom response is configured.
@@ -126,4 +126,52 @@ The system SHALL persist response configurations to the database.
 - **WHEN** user configures custom response
 - **AND** application restarts
 - **THEN** the custom response configuration is still active
+
+### Requirement: Status code selection UI
+The system SHALL provide a dropdown for selecting HTTP status codes with human-readable labels.
+
+#### Scenario: Select status code from dropdown
+- **WHEN** user clicks the status code dropdown
+- **THEN** a list of all status codes (100-599) is displayed with labels (e.g., "200 OK", "404 Not Found")
+- **AND** default selection is 200 OK
+
+### Requirement: Content type selection
+The system SHALL allow users to select the response content type.
+
+#### Scenario: Change content type
+- **WHEN** user selects a different content type from dropdown
+- **THEN** the system stores the selected content type
+- **AND** the editor syntax highlighting updates accordingly (if code editor is used)
+
+### Requirement: Response body code editor
+The system SHALL provide a code editor for editing response body with syntax highlighting.
+
+#### Scenario: Edit JSON response body
+- **WHEN** content type is set to JSON
+- **THEN** the editor displays JSON syntax highlighting
+- **AND** pressing Tab inserts 2 spaces
+
+#### Scenario: Edit XML response body
+- **WHEN** content type is set to XML
+- **THEN** the editor displays XML syntax highlighting
+
+#### Scenario: Edit plain text response body
+- **WHEN** content type is set to Plain text
+- **THEN** the editor displays plain text without syntax highlighting
+
+#### Scenario: View line numbers
+- **WHEN** the editor has content
+- **THEN** line numbers are displayed on the left side
+
+### Requirement: Format response body
+The system SHALL provide a button to auto-format the response body.
+
+#### Scenario: Format valid JSON
+- **WHEN** user clicks the Format button with valid JSON content
+- **THEN** the JSON is formatted with proper indentation
+
+#### Scenario: Format invalid JSON
+- **WHEN** user clicks the Format button with invalid JSON content
+- **THEN** an error notification is displayed
+- **AND** the content remains unchanged
 
