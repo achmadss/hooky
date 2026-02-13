@@ -2,17 +2,17 @@
 
 ## 1. Project Setup and Database
 
-- [ ] 1.1 Install required dependencies: Prisma, Socket.io, @socket.io/client, NextAuth.js
-- [ ] 1.2 Initialize Prisma with PostgreSQL provider
-- [ ] 1.3 Create database schema with User, Webhook, Request, and ResponseConfig models
-- [ ] 1.4 Add User model with email, passwordHash, createdAt, deletedAt (nullable) fields
-- [ ] 1.5 Add anonymous session support to Webhook model (ownerId nullable, sessionId)
-- [ ] 1.6 Add isEnabled field to Webhook model (default: true)
-- [ ] 1.7 Add deletedAt field (nullable) to all models: User, Webhook, Request, ResponseConfig
-- [ ] 1.8 Add Prisma middleware for automatic soft-delete filtering
+- [x] 1.1 Install required dependencies: Prisma, Socket.io, @socket.io/client, NextAuth.js
+- [x] 1.2 Initialize Prisma with PostgreSQL provider
+- [x] 1.3 Create database schema with User, Webhook, Request, and ResponseConfig models
+- [x] 1.4 Add User model with email, passwordHash, createdAt, deletedAt (nullable) fields
+- [x] 1.5 Add anonymous session support to Webhook model (ownerId nullable, sessionId)
+- [x] 1.6 Add isEnabled field to Webhook model (default: true)
+- [x] 1.7 Add deletedAt field (nullable) to all models: User, Webhook, Request, ResponseConfig
+- [x] 1.8 Add Prisma middleware for automatic soft-delete filtering
 - [ ] 1.9 Create and run initial database migration
-- [ ] 1.10 Set up environment variables (.env.example with DATABASE_URL, NEXTAUTH_SECRET)
-- [ ] 1.11 Create database connection utility (lib/db/index.ts)
+- [x] 1.10 Set up environment variables (.env.example with DATABASE_URL, NEXTAUTH_SECRET)
+- [x] 1.11 Create database connection utility (lib/db/index.ts)
 
 ## 2. Authentication and Anonymous Session Setup
 
