@@ -75,13 +75,6 @@ export default async function WebhookDetailPage({ params, searchParams }: PagePr
                     <WebhookUrlDisplay token={webhook.token} />
                 </div>
 
-                {/* Task 17.7: Ownership indicator badge */}
-                {isOwner && (
-                    <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 shrink-0">
-                        Owned
-                    </span>
-                )}
-
                 {/* Task 5: Webhook detail page management for authenticated owners */}
                 <WebhookDetailActions
                     webhookId={id}
