@@ -281,7 +281,27 @@ Hooky is a new webhook mock and inspection tool designed to simplify debugging, 
 - Clear filters button
 - Search highlighting in results
 
-### 14. Soft-Delete Architecture
+### 14. Global Navigation and Layout
+
+**Decision:** Implement a persistent global navigation bar on all pages
+
+**Rationale:**
+- Consistent user experience across the application
+- Easy access to core functionality (Dashboard, Profile, Settings)
+- Clear branding/context
+
+**Navbar Design:**
+- **Left**: App Name ("Hooky") linking to home/dashboard
+- **Right**: Profile Component
+  - **Avatar**: Circular image or initials (First char of name/email) if no image
+  - **Interaction**: Click to open dropdown menu
+  - **Dropdown Items**:
+    - Dashboard (for authenticated users)
+    - Dark/Light Mode Toggle
+    - Logout (for authenticated users)
+    - Login/Register (for anonymous users)
+
+### 15. Soft-Delete Architecture
 
 **Decision:** Implement soft-delete for all entities (webhooks, requests, users)
 
@@ -315,7 +335,7 @@ Hooky is a new webhook mock and inspection tool designed to simplify debugging, 
 - No data loss from bugs or user errors
 - Easy to implement "Recently Deleted" feature later
 
-### 15. Webhook Ownership and Claiming
+### 16. Webhook Ownership and Claiming
 
 **Decision:** Webhooks have optional ownerId (null for anonymous, userId for authenticated)
 
@@ -340,7 +360,7 @@ Hooky is a new webhook mock and inspection tool designed to simplify debugging, 
 - Multiple anonymous sessions cannot claim the same webhook
 - User can decline claiming (webhooks remain anonymous)
 
-### 16. User Flow and Homepage Behavior
+### 17. User Flow and Homepage Behavior
 
 **Decision:** Different homepage behavior for authenticated vs anonymous users
 

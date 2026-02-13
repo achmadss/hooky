@@ -1,0 +1,1145 @@
+{
+  "changeName": "hooky",
+  "changeDir": "/Users/achmad/Documents/Projects/hooky/openspec/changes/hooky",
+  "schemaName": "spec-driven",
+  "contextFiles": {
+    "proposal": "/Users/achmad/Documents/Projects/hooky/openspec/changes/hooky/proposal.md",
+    "specs": "/Users/achmad/Documents/Projects/hooky/openspec/changes/hooky/specs/**/*.md",
+    "design": "/Users/achmad/Documents/Projects/hooky/openspec/changes/hooky/design.md",
+    "tasks": "/Users/achmad/Documents/Projects/hooky/openspec/changes/hooky/tasks.md"
+  },
+  "progress": {
+    "total": 225,
+    "complete": 93,
+    "remaining": 132
+  },
+  "tasks": [
+    {
+      "id": "1",
+      "description": "1.1 Install required dependencies: Prisma, Socket.io, @socket.io/client, NextAuth.js",
+      "done": true
+    },
+    {
+      "id": "2",
+      "description": "1.2 Initialize Prisma with PostgreSQL provider",
+      "done": true
+    },
+    {
+      "id": "3",
+      "description": "1.3 Create database schema with User, Webhook, Request, and ResponseConfig models",
+      "done": true
+    },
+    {
+      "id": "4",
+      "description": "1.4 Add User model with email, passwordHash, createdAt, deletedAt (nullable) fields",
+      "done": true
+    },
+    {
+      "id": "5",
+      "description": "1.5 Add anonymous session support to Webhook model (ownerId nullable, sessionId)",
+      "done": true
+    },
+    {
+      "id": "6",
+      "description": "1.6 Add isEnabled field to Webhook model (default: true)",
+      "done": true
+    },
+    {
+      "id": "7",
+      "description": "1.7 Add deletedAt field (nullable) to all models: User, Webhook, Request, ResponseConfig",
+      "done": true
+    },
+    {
+      "id": "8",
+      "description": "1.8 Add Prisma middleware for automatic soft-delete filtering",
+      "done": true
+    },
+    {
+      "id": "9",
+      "description": "1.9 Create and run initial database migration",
+      "done": true
+    },
+    {
+      "id": "10",
+      "description": "1.10 Set up environment variables (.env.example with DATABASE_URL, NEXTAUTH_SECRET)",
+      "done": true
+    },
+    {
+      "id": "11",
+      "description": "1.11 Create database connection utility (lib/db/index.ts)",
+      "done": true
+    },
+    {
+      "id": "12",
+      "description": "2.1 Configure NextAuth.js with credentials provider",
+      "done": true
+    },
+    {
+      "id": "13",
+      "description": "2.2 Implement password hashing using bcrypt",
+      "done": true
+    },
+    {
+      "id": "14",
+      "description": "2.3 Create anonymous session middleware with session ID generation",
+      "done": true
+    },
+    {
+      "id": "15",
+      "description": "2.4 Implement session cookie handling (HTTP-only, Secure, SameSite)",
+      "done": true
+    },
+    {
+      "id": "16",
+      "description": "2.5 Create auth context/provider for React",
+      "done": true
+    },
+    {
+      "id": "17",
+      "description": "2.6 Implement auth guards for protected routes",
+      "done": true
+    },
+    {
+      "id": "18",
+      "description": "2.7 Add NEXTAUTH_SECRET and NEXTAUTH_URL to environment variables",
+      "done": true
+    },
+    {
+      "id": "19",
+      "description": "2.8 Implement anonymous session storage (cookie-based)",
+      "done": true
+    },
+    {
+      "id": "20",
+      "description": "2.9 Create utility to check if user is anonymous vs authenticated",
+      "done": true
+    },
+    {
+      "id": "21",
+      "description": "2.10 Implement anonymous session persistence across page reloads",
+      "done": true
+    },
+    {
+      "id": "22",
+      "description": "2.11 Design auth system architecture for OAuth provider extensibility",
+      "done": true
+    },
+    {
+      "id": "23",
+      "description": "2.12 Configure NextAuth.js to support multiple providers (for future OAuth)",
+      "done": true
+    },
+    {
+      "id": "24",
+      "description": "2.13 Ensure user model can store provider-specific data without schema changes",
+      "done": true
+    },
+    {
+      "id": "25",
+      "description": "3.1 Implement POST /api/webhooks - create webhook with auto-generated token (authenticated only)",
+      "done": true
+    },
+    {
+      "id": "26",
+      "description": "3.2 Implement token generation utility (16-char alphanumeric random)",
+      "done": true
+    },
+    {
+      "id": "27",
+      "description": "3.3 Implement token sanitization (lowercase, spaces to dashes, alphanumeric only)",
+      "done": true
+    },
+    {
+      "id": "28",
+      "description": "3.4 Add validation for custom tokens (3-64 chars, unique check)",
+      "done": true
+    },
+    {
+      "id": "29",
+      "description": "3.5 Implement GET /api/webhooks - list webhooks for authenticated user only (403 for anonymous)",
+      "done": true
+    },
+    {
+      "id": "30",
+      "description": "3.6 Implement GET /api/webhooks/[id] - get single webhook details with ownership/session check",
+      "done": true
+    },
+    {
+      "id": "31",
+      "description": "3.7 Implement PATCH /api/webhooks/[id] - update webhook (enable/disable, name) (authenticated only)",
+      "done": true
+    },
+    {
+      "id": "32",
+      "description": "3.8 Implement DELETE /api/webhooks/[id] - soft-delete webhook and associated requests (authenticated only)",
+      "done": true
+    },
+    {
+      "id": "33",
+      "description": "3.9 Implement GET /api/webhooks/unclaimed - get unclaimed webhook for claiming",
+      "done": true
+    },
+    {
+      "id": "34",
+      "description": "3.10 Implement POST /api/webhooks/claim - claim ownership of anonymous webhook",
+      "done": true
+    },
+    {
+      "id": "35",
+      "description": "3.11 Add authentication guards to restrict anonymous users from management endpoints",
+      "done": true
+    },
+    {
+      "id": "36",
+      "description": "3.12 Implement ownership validation middleware for protected operations",
+      "done": true
+    },
+    {
+      "id": "37",
+      "description": "3.13 Implement soft-delete middleware for Prisma queries (automatically filter deletedAt IS NULL)",
+      "done": true
+    },
+    {
+      "id": "38",
+      "description": "3.14 Add global query extension to exclude soft-deleted records by default",
+      "done": true
+    },
+    {
+      "id": "39",
+      "description": "3.15 Create utility function for soft-delete operations (set deletedAt timestamp)",
+      "done": true
+    },
+    {
+      "id": "40",
+      "description": "4.1 Create homepage route handler (`/page.tsx`) with authentication check",
+      "done": true
+    },
+    {
+      "id": "41",
+      "description": "4.2 Implement anonymous user detection on homepage visit",
+      "done": true
+    },
+    {
+      "id": "42",
+      "description": "4.3 Implement auto-webhook creation for anonymous users (random token)",
+      "done": true
+    },
+    {
+      "id": "43",
+      "description": "4.4 Implement redirect to `/webhooks/{id}` after auto-creation",
+      "done": true
+    },
+    {
+      "id": "44",
+      "description": "4.5 Implement check for existing anonymous webhook on homepage revisit",
+      "done": true
+    },
+    {
+      "id": "45",
+      "description": "4.6 Redirect existing anonymous users to their webhook detail page",
+      "done": true
+    },
+    {
+      "id": "46",
+      "description": "4.7 Display management dashboard for authenticated users on homepage",
+      "done": true
+    },
+    {
+      "id": "47",
+      "description": "4.8 Handle edge case: anonymous user with expired session visiting homepage",
+      "done": true
+    },
+    {
+      "id": "48",
+      "description": "5.1 Create catch-all API route /api/wh/[token]/route.ts for all HTTP methods",
+      "done": true
+    },
+    {
+      "id": "49",
+      "description": "5.2 Implement request validation (check if webhook token exists and is enabled)",
+      "done": true
+    },
+    {
+      "id": "50",
+      "description": "5.3 Implement request data extraction (method, headers, query params, body)",
+      "done": true
+    },
+    {
+      "id": "51",
+      "description": "5.4 Implement metadata extraction (timestamp, source IP, user agent)",
+      "done": true
+    },
+    {
+      "id": "52",
+      "description": "5.5 Implement request persistence to database",
+      "done": true
+    },
+    {
+      "id": "53",
+      "description": "5.6 Return default 200 response for requests to valid enabled webhooks",
+      "done": true
+    },
+    {
+      "id": "54",
+      "description": "5.7 Return 404 for disabled webhooks without capturing requests",
+      "done": true
+    },
+    {
+      "id": "55",
+      "description": "5.8 Implement request body size limit (50 MB maximum)",
+      "done": true
+    },
+    {
+      "id": "56",
+      "description": "5.9 Add MAX_REQUEST_BODY_SIZE_MB environment variable (default: 50)",
+      "done": true
+    },
+    {
+      "id": "57",
+      "description": "5.10 Return 413 Payload Too Large for requests exceeding size limit",
+      "done": true
+    },
+    {
+      "id": "58",
+      "description": "5.11 Implement text-based body handling (JSON, XML, plain text, form data)",
+      "done": true
+    },
+    {
+      "id": "59",
+      "description": "5.12 Reject binary Content-Type requests with 415 Unsupported Media Type",
+      "done": true
+    },
+    {
+      "id": "60",
+      "description": "5.13 Add check for binary Content-Type prefixes (image/, video/, audio/, application/octet-stream)",
+      "done": true
+    },
+    {
+      "id": "61",
+      "description": "5.14 Ensure request queries filter out soft-deleted records (deletedAt IS NULL)",
+      "done": true
+    },
+    {
+      "id": "62",
+      "description": "6.1 Implement GET /api/webhooks/[id]/response - get response config",
+      "done": true
+    },
+    {
+      "id": "63",
+      "description": "6.2 Implement PUT /api/webhooks/[id]/response - update response config",
+      "done": true
+    },
+    {
+      "id": "64",
+      "description": "6.3 Add validation for status code (100-599 range)",
+      "done": true
+    },
+    {
+      "id": "65",
+      "description": "6.4 Implement DELETE /api/webhooks/[id]/response - reset to defaults",
+      "done": true
+    },
+    {
+      "id": "66",
+      "description": "6.5 Update request capture to use custom response if configured",
+      "done": true
+    },
+    {
+      "id": "67",
+      "description": "6.6 Return default response (200, text/plain, empty body) when no config exists",
+      "done": true
+    },
+    {
+      "id": "68",
+      "description": "7.1 Set up Socket.io server in Next.js (socket.ts or similar)",
+      "done": true
+    },
+    {
+      "id": "69",
+      "description": "7.2 Implement connection handling and connection ID assignment",
+      "done": true
+    },
+    {
+      "id": "70",
+      "description": "7.3 Implement \"join\" event handler to add client to webhook room",
+      "done": true
+    },
+    {
+      "id": "71",
+      "description": "7.4 Implement \"leave\" event handler to remove client from room",
+      "done": true
+    },
+    {
+      "id": "72",
+      "description": "7.5 Implement request broadcasting to webhook rooms on new capture",
+      "done": true
+    },
+    {
+      "id": "73",
+      "description": "7.6 Add connection status events (connected, disconnect, error)",
+      "done": true
+    },
+    {
+      "id": "74",
+      "description": "7.7 Handle client disconnections and cleanup",
+      "done": true
+    },
+    {
+      "id": "75",
+      "description": "8.1 Implement cleanup job using node-cron or similar",
+      "done": true
+    },
+    {
+      "id": "76",
+      "description": "8.2 Create soft-delete query to mark requests as deleted (set deletedAt) older than 7 days for anonymous webhooks",
+      "done": true
+    },
+    {
+      "id": "77",
+      "description": "8.3 Set anonymous session cookie expiry to 6 days",
+      "done": true
+    },
+    {
+      "id": "78",
+      "description": "8.4 Add logging for cleanup job activity (log number of soft-deleted records)",
+      "done": true
+    },
+    {
+      "id": "79",
+      "description": "8.5 Schedule cleanup job to run daily at midnight UTC",
+      "done": true
+    },
+    {
+      "id": "80",
+      "description": "8.6 Make retention period configurable via ANONYMOUS_RETENTION_DAYS env var (default: 7)",
+      "done": true
+    },
+    {
+      "id": "81",
+      "description": "8.7 Make session expiry configurable via ANONYMOUS_SESSION_EXPIRY_DAYS env var (default: 6)",
+      "done": true
+    },
+    {
+      "id": "82",
+      "description": "8.8 Add error handling and retry logic for cleanup failures",
+      "done": true
+    },
+    {
+      "id": "83",
+      "description": "8.9 Ensure all queries filter out soft-deleted records by default",
+      "done": true
+    },
+    {
+      "id": "84",
+      "description": "9.1 Create homepage dashboard for authenticated users showing ONLY owned webhooks",
+      "done": true
+    },
+    {
+      "id": "85",
+      "description": "9.2 Implement CreateWebhookForm component with name and custom token inputs",
+      "done": true
+    },
+    {
+      "id": "86",
+      "description": "9.3 Add live token preview with sanitization",
+      "done": true
+    },
+    {
+      "id": "87",
+      "description": "9.4 Implement webhook list item with token, creation date, request count, and ownership badge",
+      "done": true
+    },
+    {
+      "id": "88",
+      "description": "9.5 Add empty state for webhook list with CTA to create webhook",
+      "done": true
+    },
+    {
+      "id": "89",
+      "description": "9.6 Implement webhook soft-deletion with confirmation dialog (authenticated only) - sets deletedAt timestamp",
+      "done": true
+    },
+    {
+      "id": "90",
+      "description": "9.7 Add webhook enable/disable toggle with visual status indicator (authenticated only)",
+      "done": true
+    },
+    {
+      "id": "91",
+      "description": "9.8 Show warning banner for disabled webhooks",
+      "done": true
+    },
+    {
+      "id": "92",
+      "description": "9.9 Ensure anonymous users cannot see management UI elements (create, delete, enable/disable buttons)",
+      "done": true
+    },
+    {
+      "id": "93",
+      "description": "9.10 Dashboard shows only owned webhooks (unclaimed anonymous webhooks NOT shown)",
+      "done": true
+    },
+    {
+      "id": "94",
+      "description": "10.1 Create webhook detail page at /webhooks/[id]/page.tsx",
+      "done": false
+    },
+    {
+      "id": "95",
+      "description": "10.2 Implement RequestList component showing captured requests",
+      "done": false
+    },
+    {
+      "id": "96",
+      "description": "10.3 Add request list item with method badge and timestamp",
+      "done": false
+    },
+    {
+      "id": "97",
+      "description": "10.4 Implement WebSocket client connection and room joining",
+      "done": false
+    },
+    {
+      "id": "98",
+      "description": "10.5 Add real-time request updates to the list",
+      "done": false
+    },
+    {
+      "id": "99",
+      "description": "10.6 Implement request selection highlighting",
+      "done": false
+    },
+    {
+      "id": "100",
+      "description": "10.7 Add empty state for request list with instructions",
+      "done": false
+    },
+    {
+      "id": "101",
+      "description": "10.8 Show anonymous retention warning for unowned webhooks",
+      "done": false
+    },
+    {
+      "id": "102",
+      "description": "11.1 Create RequestDetail component with overview (method, timestamp, IP, user agent)",
+      "done": false
+    },
+    {
+      "id": "103",
+      "description": "11.2 Implement PrettyPayloadViewer with JSON syntax highlighting",
+      "done": false
+    },
+    {
+      "id": "104",
+      "description": "11.3 Add XML formatting support in payload viewer",
+      "done": false
+    },
+    {
+      "id": "105",
+      "description": "11.4 Implement RawRequestViewer showing complete HTTP request",
+      "done": false
+    },
+    {
+      "id": "106",
+      "description": "11.5 Create HeadersExplorer component with table view",
+      "done": false
+    },
+    {
+      "id": "107",
+      "description": "11.6 Add header search/filter functionality",
+      "done": false
+    },
+    {
+      "id": "108",
+      "description": "11.7 Create QueryParamsExplorer component",
+      "done": false
+    },
+    {
+      "id": "109",
+      "description": "11.8 Implement copy-to-clipboard functionality for various fields",
+      "done": false
+    },
+    {
+      "id": "110",
+      "description": "12.1 Create ResponseConfigPanel component (visible only to authenticated users who own the webhook)",
+      "done": false
+    },
+    {
+      "id": "111",
+      "description": "12.2 Implement status code input with validation",
+      "done": false
+    },
+    {
+      "id": "112",
+      "description": "12.3 Create headers editor (key-value pair input)",
+      "done": false
+    },
+    {
+      "id": "113",
+      "description": "12.4 Add response body textarea",
+      "done": false
+    },
+    {
+      "id": "114",
+      "description": "12.5 Implement save functionality with API integration",
+      "done": false
+    },
+    {
+      "id": "115",
+      "description": "12.6 Add \"Reset to Defaults\" button",
+      "done": false
+    },
+    {
+      "id": "116",
+      "description": "12.7 Show success/error messages on save",
+      "done": false
+    },
+    {
+      "id": "117",
+      "description": "12.8 Hide Response Configuration tab for anonymous users",
+      "done": false
+    },
+    {
+      "id": "118",
+      "description": "12.9 Show read-only default response info for anonymous users (200 OK)",
+      "done": false
+    },
+    {
+      "id": "119",
+      "description": "13.1 Create page layout with sidebar (request list) and main panel (request detail)",
+      "done": false
+    },
+    {
+      "id": "120",
+      "description": "13.2 Display webhook URL prominently with copy button",
+      "done": false
+    },
+    {
+      "id": "121",
+      "description": "13.3 Add tabs or sections for Request Inspector and Response Config",
+      "done": false
+    },
+    {
+      "id": "122",
+      "description": "13.4 Implement responsive layout for mobile devices",
+      "done": false
+    },
+    {
+      "id": "123",
+      "description": "13.5 Add back button to home page (only for authenticated users)",
+      "done": false
+    },
+    {
+      "id": "124",
+      "description": "13.6 Handle 404 for non-existent webhooks",
+      "done": false
+    },
+    {
+      "id": "125",
+      "description": "13.7 Add \"Back to Dashboard\" button for authenticated users",
+      "done": false
+    },
+    {
+      "id": "126",
+      "description": "13.8 Hide dashboard navigation for anonymous users",
+      "done": false
+    },
+    {
+      "id": "127",
+      "description": "14.1 Configure Tailwind CSS for dark mode (darkMode: 'class')",
+      "done": false
+    },
+    {
+      "id": "128",
+      "description": "14.2 Create ThemeProvider context for managing theme state",
+      "done": false
+    },
+    {
+      "id": "129",
+      "description": "14.3 Implement system preference detection on initial load",
+      "done": false
+    },
+    {
+      "id": "130",
+      "description": "14.4 Create dark mode toggle button in header",
+      "done": false
+    },
+    {
+      "id": "131",
+      "description": "14.5 Store user theme preference in localStorage",
+      "done": false
+    },
+    {
+      "id": "132",
+      "description": "14.6 Update all UI components to support dark mode classes",
+      "done": false
+    },
+    {
+      "id": "133",
+      "description": "14.7 Implement dark mode styles for:",
+      "done": false
+    },
+    {
+      "id": "134",
+      "description": "14.8 Update code/syntax highlighting for dark mode",
+      "done": false
+    },
+    {
+      "id": "135",
+      "description": "14.9 Test all components in both light and dark modes",
+      "done": false
+    },
+    {
+      "id": "136",
+      "description": "15.1 Create SearchFilterPanel component for request list",
+      "done": false
+    },
+    {
+      "id": "137",
+      "description": "15.2 Implement search input with real-time filtering",
+      "done": false
+    },
+    {
+      "id": "138",
+      "description": "15.3 Add search by HTTP method (GET, POST, PUT, etc.)",
+      "done": false
+    },
+    {
+      "id": "139",
+      "description": "15.4 Add search by request body content",
+      "done": false
+    },
+    {
+      "id": "140",
+      "description": "15.5 Add search by headers",
+      "done": false
+    },
+    {
+      "id": "141",
+      "description": "15.6 Create time range filter dropdown (Last hour, 24 hours, 7 days, All time)",
+      "done": false
+    },
+    {
+      "id": "142",
+      "description": "15.7 Implement search highlighting in results",
+      "done": false
+    },
+    {
+      "id": "143",
+      "description": "15.8 Add search results count display",
+      "done": false
+    },
+    {
+      "id": "144",
+      "description": "15.9 Create \"Clear filters\" button",
+      "done": false
+    },
+    {
+      "id": "145",
+      "description": "15.10 Handle empty search results state",
+      "done": false
+    },
+    {
+      "id": "146",
+      "description": "15.11 Optimize search performance for large request lists",
+      "done": false
+    },
+    {
+      "id": "147",
+      "description": "16.1 Create AuthModal component with login and registration forms",
+      "done": false
+    },
+    {
+      "id": "148",
+      "description": "16.2 Implement form validation for email and password",
+      "done": false
+    },
+    {
+      "id": "149",
+      "description": "16.3 Add error handling for auth failures",
+      "done": false
+    },
+    {
+      "id": "150",
+      "description": "16.4 Create AuthButtons component for header (Sign Up/Log In or User menu)",
+      "done": false
+    },
+    {
+      "id": "151",
+      "description": "16.5 Implement password visibility toggle",
+      "done": false
+    },
+    {
+      "id": "152",
+      "description": "16.6 Add loading states for auth submissions",
+      "done": false
+    },
+    {
+      "id": "153",
+      "description": "16.7 Create anonymous mode banner with retention warning",
+      "done": false
+    },
+    {
+      "id": "154",
+      "description": "16.8 Add \"Sign Up to Save\" CTA button in anonymous banner",
+      "done": false
+    },
+    {
+      "id": "155",
+      "description": "17.1 Create WebhookClaimPrompt modal component",
+      "done": false
+    },
+    {
+      "id": "156",
+      "description": "17.2 Implement detection of unclaimed webhook on login",
+      "done": false
+    },
+    {
+      "id": "157",
+      "description": "17.3 Display claim prompt with auto-created webhook details",
+      "done": false
+    },
+    {
+      "id": "158",
+      "description": "17.4 Implement \"Add to My Account\" button functionality",
+      "done": false
+    },
+    {
+      "id": "159",
+      "description": "17.5 Implement \"Keep Anonymous\" button functionality",
+      "done": false
+    },
+    {
+      "id": "160",
+      "description": "17.6 Show success message after claiming webhook",
+      "done": false
+    },
+    {
+      "id": "161",
+      "description": "17.7 Add ownership indicators (\"Owned\" vs \"Anonymous\" badges)",
+      "done": false
+    },
+    {
+      "id": "162",
+      "description": "17.8 Redirect to dashboard after claiming or declining",
+      "done": false
+    },
+    {
+      "id": "163",
+      "description": "18.1 Implement homepage route (`/`) with auth-based rendering",
+      "done": false
+    },
+    {
+      "id": "164",
+      "description": "18.2 Add redirect logic for anonymous users visiting homepage",
+      "done": false
+    },
+    {
+      "id": "165",
+      "description": "18.3 Create protected route wrapper for authenticated-only pages",
+      "done": false
+    },
+    {
+      "id": "166",
+      "description": "18.4 Add \"Dashboard\" link in header for authenticated users",
+      "done": false
+    },
+    {
+      "id": "167",
+      "description": "18.5 Hide dashboard navigation options for anonymous users",
+      "done": false
+    },
+    {
+      "id": "168",
+      "description": "18.6 Handle direct URL access to webhook detail pages (ownership check)",
+      "done": false
+    },
+    {
+      "id": "169",
+      "description": "19.1 Create Dockerfile with multi-stage build (node:20-alpine)",
+      "done": false
+    },
+    {
+      "id": "170",
+      "description": "19.2 Create docker-compose.yml with app and postgres services",
+      "done": false
+    },
+    {
+      "id": "171",
+      "description": "19.3 Add PostgreSQL volume for data persistence",
+      "done": false
+    },
+    {
+      "id": "172",
+      "description": "19.4 Configure environment variables in docker-compose",
+      "done": false
+    },
+    {
+      "id": "173",
+      "description": "19.5 Add health checks for services",
+      "done": false
+    },
+    {
+      "id": "174",
+      "description": "19.6 Test Docker build and run locally",
+      "done": false
+    },
+    {
+      "id": "175",
+      "description": "20.1 Create WebSocket context/provider for React",
+      "done": false
+    },
+    {
+      "id": "176",
+      "description": "20.2 Implement auto-reconnect with exponential backoff",
+      "done": false
+    },
+    {
+      "id": "177",
+      "description": "20.3 Add connection status indicator in UI",
+      "done": false
+    },
+    {
+      "id": "178",
+      "description": "20.4 Handle rejoining rooms after reconnection",
+      "done": false
+    },
+    {
+      "id": "179",
+      "description": "20.5 Clean up connections on component unmount",
+      "done": false
+    },
+    {
+      "id": "180",
+      "description": "20.6 Add error handling for connection failures",
+      "done": false
+    },
+    {
+      "id": "181",
+      "description": "21.1 Create token generation utility (crypto-based random)",
+      "done": false
+    },
+    {
+      "id": "182",
+      "description": "21.2 Create token sanitization utility",
+      "done": false
+    },
+    {
+      "id": "183",
+      "description": "21.3 Add date/time formatting utilities",
+      "done": false
+    },
+    {
+      "id": "184",
+      "description": "21.4 Create IP address parsing utility (handle IPv4/IPv6)",
+      "done": false
+    },
+    {
+      "id": "185",
+      "description": "21.5 Add request body size detection",
+      "done": false
+    },
+    {
+      "id": "186",
+      "description": "21.6 Create copy-to-clipboard utility",
+      "done": false
+    },
+    {
+      "id": "187",
+      "description": "21.7 Create anonymous session ID generator",
+      "done": false
+    },
+    {
+      "id": "188",
+      "description": "21.8 Create auth state utility (isAuthenticated, isAnonymous)",
+      "done": false
+    },
+    {
+      "id": "189",
+      "description": "22.1 Test webhook creation with auto-generated tokens",
+      "done": false
+    },
+    {
+      "id": "190",
+      "description": "22.2 Test webhook creation with custom tokens and sanitization",
+      "done": false
+    },
+    {
+      "id": "191",
+      "description": "22.3 Test duplicate token validation",
+      "done": false
+    },
+    {
+      "id": "192",
+      "description": "22.4 Test all HTTP methods (GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS)",
+      "done": false
+    },
+    {
+      "id": "193",
+      "description": "22.5 Test request capture with various body types (JSON, XML, form data)",
+      "done": false
+    },
+    {
+      "id": "194",
+      "description": "22.6 Test request body size limit (50 MB)",
+      "done": false
+    },
+    {
+      "id": "195",
+      "description": "22.7 Test WebSocket real-time updates",
+      "done": false
+    },
+    {
+      "id": "196",
+      "description": "22.8 Test custom response configuration",
+      "done": false
+    },
+    {
+      "id": "197",
+      "description": "22.9 Test webhook enable/disable functionality",
+      "done": false
+    },
+    {
+      "id": "198",
+      "description": "22.10 Test anonymous mode (auto-creation, redirect, session persistence)",
+      "done": false
+    },
+    {
+      "id": "199",
+      "description": "22.11 Test anonymous homepage redirect to webhook detail",
+      "done": false
+    },
+    {
+      "id": "200",
+      "description": "22.12 Test user registration and login",
+      "done": false
+    },
+    {
+      "id": "201",
+      "description": "22.13 Test webhook claiming workflow",
+      "done": false
+    },
+    {
+      "id": "202",
+      "description": "22.14 Test request soft-delete cleanup job for anonymous webhooks",
+      "done": false
+    },
+    {
+      "id": "203",
+      "description": "22.15 Test authenticated user request persistence (no soft-delete)",
+      "done": false
+    },
+    {
+      "id": "204",
+      "description": "22.16 Test webhook soft-deletion (sets deletedAt, hides from UI)",
+      "done": false
+    },
+    {
+      "id": "205",
+      "description": "22.17 Test soft-deleted webhooks are excluded from list queries",
+      "done": false
+    },
+    {
+      "id": "206",
+      "description": "22.18 Test soft-deleted requests are excluded from request list",
+      "done": false
+    },
+    {
+      "id": "207",
+      "description": "22.19 Test anonymous user cannot access management features",
+      "done": false
+    },
+    {
+      "id": "208",
+      "description": "22.20 Test authenticated user sees dashboard on homepage",
+      "done": false
+    },
+    {
+      "id": "209",
+      "description": "22.21 Test dark mode functionality",
+      "done": false
+    },
+    {
+      "id": "210",
+      "description": "22.22 Test request search and filtering",
+      "done": false
+    },
+    {
+      "id": "211",
+      "description": "22.23 Test soft-delete middleware filters correctly",
+      "done": false
+    },
+    {
+      "id": "212",
+      "description": "22.24 Test Docker deployment end-to-end",
+      "done": false
+    },
+    {
+      "id": "213",
+      "description": "23.1 Update README.md with setup instructions",
+      "done": false
+    },
+    {
+      "id": "214",
+      "description": "23.2 Add Docker usage instructions",
+      "done": false
+    },
+    {
+      "id": "215",
+      "description": "23.3 Create API documentation (endpoints, request/response formats)",
+      "done": false
+    },
+    {
+      "id": "216",
+      "description": "23.4 Add environment variable documentation",
+      "done": false
+    },
+    {
+      "id": "217",
+      "description": "23.5 Document authentication and anonymous mode features",
+      "done": false
+    },
+    {
+      "id": "218",
+      "description": "23.6 Document webhook claiming workflow",
+      "done": false
+    },
+    {
+      "id": "219",
+      "description": "23.7 Document user flow differences (anonymous vs authenticated)",
+      "done": false
+    },
+    {
+      "id": "220",
+      "description": "23.8 Document dark mode feature",
+      "done": false
+    },
+    {
+      "id": "221",
+      "description": "23.9 Document request search and filtering",
+      "done": false
+    },
+    {
+      "id": "222",
+      "description": "23.10 Document soft-delete architecture and data recovery",
+      "done": false
+    },
+    {
+      "id": "223",
+      "description": "23.11 Test responsive design on different screen sizes",
+      "done": false
+    },
+    {
+      "id": "224",
+      "description": "23.11 Add loading states for async operations",
+      "done": false
+    },
+    {
+      "id": "225",
+      "description": "23.12 Add error boundaries for component failures",
+      "done": false
+    }
+  ],
+  "state": "ready",
+  "instruction": "Read context files, work through pending tasks, mark complete as you go.\nPause if you hit blockers or need clarification."
+}
