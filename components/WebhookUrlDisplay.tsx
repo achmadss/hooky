@@ -23,7 +23,7 @@ export default function WebhookUrlDisplay({ token, className = '' }: WebhookUrlD
                     type="text"
                     readOnly
                     value={origin ? url : 'Loading...'}
-                    className="block w-full pl-3 py-1.5 text-sm text-gray-600 bg-gray-50 dark:bg-zinc-800 dark:text-gray-300 dark:border-zinc-700 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 font-mono text-ellipsis"
+                    className="block w-full pl-3 pr-3 py-1.5 text-sm text-gray-600 bg-gray-50 dark:bg-zinc-800 dark:text-gray-300 dark:border-zinc-700 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 font-mono text-right"
                     onClick={(e) => e.currentTarget.select()}
                 />
             </div>

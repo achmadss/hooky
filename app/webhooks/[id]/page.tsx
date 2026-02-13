@@ -98,7 +98,7 @@ export default async function WebhookDetailPage({ params, searchParams }: PagePr
 
                 {/* Main Content - Request Detail (hidden on mobile unless selected) */}
                 <div className={`flex-1 flex flex-col overflow-hidden ${requestId ? 'flex' : 'hidden md:flex'}`}>
-                    <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+                    <div className="flex-1 overflow-y-auto p-0 sm:p-0">
                         {selectedRequest ? (
                             <RequestDetail request={selectedRequest} webhookToken={(selectedRequest as any).webhookToken || webhook.token} />
                         ) : (

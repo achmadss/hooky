@@ -41,7 +41,7 @@ export default function RequestDetail({ request, webhookToken }: RequestDetailPr
     const date = new Date(request.timestamp)
 
     return (
-        <div className="flex flex-col h-full bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-lg shadow-sm overflow-hidden">
+        <div className="flex flex-col h-full bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 shadow-sm overflow-hidden">
             {/* Task 11.1: Request Overview */}
             <div className="p-6 border-b border-gray-200 dark:border-zinc-800 bg-gray-50/50 dark:bg-zinc-900/50">
                 <div className="flex items-start justify-between mb-4">
