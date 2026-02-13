@@ -78,6 +78,10 @@ export default function DashboardClient({ initialWebhooks, initialPagination }: 
         fetchWebhooks(newPage, search)
     }
 
+    const handleWebhookCreated = () => {
+        fetchWebhooks(1, search)
+    }
+
     return (
         <main className="min-h-screen p-8 bg-zinc-50 dark:bg-black font-sans">
             <div className="max-w-5xl mx-auto">
@@ -86,7 +90,7 @@ export default function DashboardClient({ initialWebhooks, initialPagination }: 
                     <p className="text-zinc-500 dark:text-zinc-400 mt-2">Manage your webhooks and inspect captured requests.</p>
                 </header>
 
-                <CreateWebhookForm />
+                <CreateWebhookForm onSuccess={handleWebhookCreated} />
 
                 <div className="mt-8">
                     <div className="flex items-center justify-between mb-4">

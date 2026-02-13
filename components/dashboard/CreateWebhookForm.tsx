@@ -6,7 +6,11 @@ import { generateToken, sanitizeToken, validateToken } from '@/lib/token'
 import { cn } from '@/lib/utils'
 import { RefreshCw, Plus, AlertCircle } from 'lucide-react'
 
-export default function CreateWebhookForm() {
+interface CreateWebhookFormProps {
+    onSuccess?: () => void
+}
+
+export default function CreateWebhookForm({ onSuccess }: CreateWebhookFormProps) {
     const router = useRouter()
     const [token, setToken] = useState('')
     const [customName, setCustomName] = useState('')
@@ -79,6 +83,7 @@ export default function CreateWebhookForm() {
             setCustomName('')
             setIsCustom(false)
             router.refresh()
+            if (onSuccess) onSuccess()
         } catch (err: any) {
             setError(err.message)
         } finally {
