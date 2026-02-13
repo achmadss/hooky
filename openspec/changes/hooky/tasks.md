@@ -10,102 +10,102 @@
 - [x] 1.6 Add isEnabled field to Webhook model (default: true)
 - [x] 1.7 Add deletedAt field (nullable) to all models: User, Webhook, Request, ResponseConfig
 - [x] 1.8 Add Prisma middleware for automatic soft-delete filtering
-- [ ] 1.9 Create and run initial database migration
+- [x] 1.9 Create and run initial database migration
 - [x] 1.10 Set up environment variables (.env.example with DATABASE_URL, NEXTAUTH_SECRET)
 - [x] 1.11 Create database connection utility (lib/db/index.ts)
 
 ## 2. Authentication and Anonymous Session Setup
 
-- [ ] 2.1 Configure NextAuth.js with credentials provider
-- [ ] 2.2 Implement password hashing using bcrypt
-- [ ] 2.3 Create anonymous session middleware with session ID generation
-- [ ] 2.4 Implement session cookie handling (HTTP-only, Secure, SameSite)
-- [ ] 2.5 Create auth context/provider for React
-- [ ] 2.6 Implement auth guards for protected routes
-- [ ] 2.7 Add NEXTAUTH_SECRET and NEXTAUTH_URL to environment variables
-- [ ] 2.8 Implement anonymous session storage (cookie-based)
-- [ ] 2.9 Create utility to check if user is anonymous vs authenticated
-- [ ] 2.10 Implement anonymous session persistence across page reloads
-- [ ] 2.11 Design auth system architecture for OAuth provider extensibility
-- [ ] 2.12 Configure NextAuth.js to support multiple providers (for future OAuth)
-- [ ] 2.13 Ensure user model can store provider-specific data without schema changes
+- [x] 2.1 Configure NextAuth.js with credentials provider
+- [x] 2.2 Implement password hashing using bcrypt
+- [x] 2.3 Create anonymous session middleware with session ID generation
+- [x] 2.4 Implement session cookie handling (HTTP-only, Secure, SameSite)
+- [x] 2.5 Create auth context/provider for React
+- [x] 2.6 Implement auth guards for protected routes
+- [x] 2.7 Add NEXTAUTH_SECRET and NEXTAUTH_URL to environment variables
+- [x] 2.8 Implement anonymous session storage (cookie-based)
+- [x] 2.9 Create utility to check if user is anonymous vs authenticated
+- [x] 2.10 Implement anonymous session persistence across page reloads
+- [x] 2.11 Design auth system architecture for OAuth provider extensibility
+- [x] 2.12 Configure NextAuth.js to support multiple providers (for future OAuth)
+- [x] 2.13 Ensure user model can store provider-specific data without schema changes
 
 ## 3. Webhook Management API
 
-- [ ] 3.1 Implement POST /api/webhooks - create webhook with auto-generated token (authenticated only)
-- [ ] 3.2 Implement token generation utility (16-char alphanumeric random)
-- [ ] 3.3 Implement token sanitization (lowercase, spaces to dashes, alphanumeric only)
-- [ ] 3.4 Add validation for custom tokens (3-64 chars, unique check)
-- [ ] 3.5 Implement GET /api/webhooks - list webhooks for authenticated user only (403 for anonymous)
-- [ ] 3.6 Implement GET /api/webhooks/[id] - get single webhook details with ownership/session check
-- [ ] 3.7 Implement PATCH /api/webhooks/[id] - update webhook (enable/disable, name) (authenticated only)
-- [ ] 3.8 Implement DELETE /api/webhooks/[id] - soft-delete webhook and associated requests (authenticated only)
-- [ ] 3.9 Implement GET /api/webhooks/unclaimed - get unclaimed webhook for claiming
-- [ ] 3.10 Implement POST /api/webhooks/claim - claim ownership of anonymous webhook
-- [ ] 3.11 Add authentication guards to restrict anonymous users from management endpoints
-- [ ] 3.12 Implement ownership validation middleware for protected operations
-- [ ] 3.13 Implement soft-delete middleware for Prisma queries (automatically filter deletedAt IS NULL)
-- [ ] 3.14 Add global query extension to exclude soft-deleted records by default
-- [ ] 3.15 Create utility function for soft-delete operations (set deletedAt timestamp)
+- [x] 3.1 Implement POST /api/webhooks - create webhook with auto-generated token (authenticated only)
+- [x] 3.2 Implement token generation utility (16-char alphanumeric random)
+- [x] 3.3 Implement token sanitization (lowercase, spaces to dashes, alphanumeric only)
+- [x] 3.4 Add validation for custom tokens (3-64 chars, unique check)
+- [x] 3.5 Implement GET /api/webhooks - list webhooks for authenticated user only (403 for anonymous)
+- [x] 3.6 Implement GET /api/webhooks/[id] - get single webhook details with ownership/session check
+- [x] 3.7 Implement PATCH /api/webhooks/[id] - update webhook (enable/disable, name) (authenticated only)
+- [x] 3.8 Implement DELETE /api/webhooks/[id] - soft-delete webhook and associated requests (authenticated only)
+- [x] 3.9 Implement GET /api/webhooks/unclaimed - get unclaimed webhook for claiming
+- [x] 3.10 Implement POST /api/webhooks/claim - claim ownership of anonymous webhook
+- [x] 3.11 Add authentication guards to restrict anonymous users from management endpoints
+- [x] 3.12 Implement ownership validation middleware for protected operations
+- [x] 3.13 Implement soft-delete middleware for Prisma queries (automatically filter deletedAt IS NULL)
+- [x] 3.14 Add global query extension to exclude soft-deleted records by default
+- [x] 3.15 Create utility function for soft-delete operations (set deletedAt timestamp)
 
 ## 4. Homepage Auto-Create and Redirect
 
-- [ ] 4.1 Create homepage route handler (`/page.tsx`) with authentication check
-- [ ] 4.2 Implement anonymous user detection on homepage visit
-- [ ] 4.3 Implement auto-webhook creation for anonymous users (random token)
-- [ ] 4.4 Implement redirect to `/webhooks/{id}` after auto-creation
-- [ ] 4.5 Implement check for existing anonymous webhook on homepage revisit
-- [ ] 4.6 Redirect existing anonymous users to their webhook detail page
-- [ ] 4.7 Display management dashboard for authenticated users on homepage
-- [ ] 4.8 Handle edge case: anonymous user with expired session visiting homepage
+- [x] 4.1 Create homepage route handler (`/page.tsx`) with authentication check
+- [x] 4.2 Implement anonymous user detection on homepage visit
+- [x] 4.3 Implement auto-webhook creation for anonymous users (random token)
+- [x] 4.4 Implement redirect to `/webhooks/{id}` after auto-creation
+- [x] 4.5 Implement check for existing anonymous webhook on homepage revisit
+- [x] 4.6 Redirect existing anonymous users to their webhook detail page
+- [x] 4.7 Display management dashboard for authenticated users on homepage
+- [x] 4.8 Handle edge case: anonymous user with expired session visiting homepage
 
 ## 5. Request Capture API
 
-- [ ] 5.1 Create catch-all API route /api/wh/[token]/route.ts for all HTTP methods
-- [ ] 5.2 Implement request validation (check if webhook token exists and is enabled)
-- [ ] 5.3 Implement request data extraction (method, headers, query params, body)
-- [ ] 5.4 Implement metadata extraction (timestamp, source IP, user agent)
-- [ ] 5.5 Implement request persistence to database
-- [ ] 5.6 Return default 200 response for requests to valid enabled webhooks
-- [ ] 5.7 Return 404 for disabled webhooks without capturing requests
-- [ ] 5.8 Implement request body size limit (50 MB maximum)
-- [ ] 5.9 Add MAX_REQUEST_BODY_SIZE_MB environment variable (default: 50)
-- [ ] 5.10 Return 413 Payload Too Large for requests exceeding size limit
-- [ ] 5.11 Implement text-based body handling (JSON, XML, plain text, form data)
-- [ ] 5.12 Reject binary Content-Type requests with 415 Unsupported Media Type
-- [ ] 5.13 Add check for binary Content-Type prefixes (image/, video/, audio/, application/octet-stream)
-- [ ] 5.14 Ensure request queries filter out soft-deleted records (deletedAt IS NULL)
+- [x] 5.1 Create catch-all API route /api/wh/[token]/route.ts for all HTTP methods
+- [x] 5.2 Implement request validation (check if webhook token exists and is enabled)
+- [x] 5.3 Implement request data extraction (method, headers, query params, body)
+- [x] 5.4 Implement metadata extraction (timestamp, source IP, user agent)
+- [x] 5.5 Implement request persistence to database
+- [x] 5.6 Return default 200 response for requests to valid enabled webhooks
+- [x] 5.7 Return 404 for disabled webhooks without capturing requests
+- [x] 5.8 Implement request body size limit (50 MB maximum)
+- [x] 5.9 Add MAX_REQUEST_BODY_SIZE_MB environment variable (default: 50)
+- [x] 5.10 Return 413 Payload Too Large for requests exceeding size limit
+- [x] 5.11 Implement text-based body handling (JSON, XML, plain text, form data)
+- [x] 5.12 Reject binary Content-Type requests with 415 Unsupported Media Type
+- [x] 5.13 Add check for binary Content-Type prefixes (image/, video/, audio/, application/octet-stream)
+- [x] 5.14 Ensure request queries filter out soft-deleted records (deletedAt IS NULL)
 
 ## 6. Response Configuration API
 
-- [ ] 6.1 Implement GET /api/webhooks/[id]/response - get response config
-- [ ] 6.2 Implement PUT /api/webhooks/[id]/response - update response config
-- [ ] 6.3 Add validation for status code (100-599 range)
-- [ ] 6.4 Implement DELETE /api/webhooks/[id]/response - reset to defaults
-- [ ] 6.5 Update request capture to use custom response if configured
-- [ ] 6.6 Return default response (200, text/plain, empty body) when no config exists
+- [x] 6.1 Implement GET /api/webhooks/[id]/response - get response config
+- [x] 6.2 Implement PUT /api/webhooks/[id]/response - update response config
+- [x] 6.3 Add validation for status code (100-599 range)
+- [x] 6.4 Implement DELETE /api/webhooks/[id]/response - reset to defaults
+- [x] 6.5 Update request capture to use custom response if configured
+- [x] 6.6 Return default response (200, text/plain, empty body) when no config exists
 
 ## 7. WebSocket Server
 
-- [ ] 7.1 Set up Socket.io server in Next.js (socket.ts or similar)
-- [ ] 7.2 Implement connection handling and connection ID assignment
-- [ ] 7.3 Implement "join" event handler to add client to webhook room
-- [ ] 7.4 Implement "leave" event handler to remove client from room
-- [ ] 7.5 Implement request broadcasting to webhook rooms on new capture
-- [ ] 7.6 Add connection status events (connected, disconnect, error)
-- [ ] 7.7 Handle client disconnections and cleanup
+- [x] 7.1 Set up Socket.io server in Next.js (socket.ts or similar)
+- [x] 7.2 Implement connection handling and connection ID assignment
+- [x] 7.3 Implement "join" event handler to add client to webhook room
+- [x] 7.4 Implement "leave" event handler to remove client from room
+- [x] 7.5 Implement request broadcasting to webhook rooms on new capture
+- [x] 7.6 Add connection status events (connected, disconnect, error)
+- [x] 7.7 Handle client disconnections and cleanup
 
 ## 8. Soft-Delete Cleanup Job
 
-- [ ] 8.1 Implement cleanup job using node-cron or similar
-- [ ] 8.2 Create soft-delete query to mark requests as deleted (set deletedAt) older than 7 days for anonymous webhooks
-- [ ] 8.3 Set anonymous session cookie expiry to 6 days
-- [ ] 8.4 Add logging for cleanup job activity (log number of soft-deleted records)
-- [ ] 8.5 Schedule cleanup job to run daily at midnight UTC
-- [ ] 8.6 Make retention period configurable via ANONYMOUS_RETENTION_DAYS env var (default: 7)
-- [ ] 8.7 Make session expiry configurable via ANONYMOUS_SESSION_EXPIRY_DAYS env var (default: 6)
-- [ ] 8.8 Add error handling and retry logic for cleanup failures
-- [ ] 8.9 Ensure all queries filter out soft-deleted records by default
+- [x] 8.1 Implement cleanup job using node-cron or similar
+- [x] 8.2 Create soft-delete query to mark requests as deleted (set deletedAt) older than 7 days for anonymous webhooks
+- [x] 8.3 Set anonymous session cookie expiry to 6 days
+- [x] 8.4 Add logging for cleanup job activity (log number of soft-deleted records)
+- [x] 8.5 Schedule cleanup job to run daily at midnight UTC
+- [x] 8.6 Make retention period configurable via ANONYMOUS_RETENTION_DAYS env var (default: 7)
+- [x] 8.7 Make session expiry configurable via ANONYMOUS_SESSION_EXPIRY_DAYS env var (default: 6)
+- [x] 8.8 Add error handling and retry logic for cleanup failures
+- [x] 8.9 Ensure all queries filter out soft-deleted records by default
 
 ## 9. Webhook Management UI (Authenticated Only)
 
