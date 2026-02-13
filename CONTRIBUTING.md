@@ -73,11 +73,10 @@ bunx prisma studio   # Open Prisma database browser
 bunx prisma migrate reset  # Reset database (dev only)
 ```
 
-## Docker Development
+## Docker (PostgreSQL only)
 
 ```bash
-# Build and run with hot reload (if modifying Dockerfile)
-docker compose -f docker-compose.dev.yml build
+# Start PostgreSQL
 docker compose -f docker-compose.dev.yml up -d
 
 # View logs
