@@ -50,7 +50,7 @@ export default async function WebhookDetailPage({ params, searchParams }: PagePr
     })
 
     const selectedRequest = requestId
-        ? requests.find(r => r.id === requestId)
+        ? requests.find((r: typeof requests[number]) => r.id === requestId)
         : requests.length > 0 ? requests[0] : null
 
     return (

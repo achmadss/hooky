@@ -2,7 +2,7 @@
 set -e
 
 echo "Running database migrations..."
-bunx prisma migrate deploy
+/usr/local/bin/bunx prisma migrate deploy
 
 echo "Starting application..."
-exec bun run start
+exec /usr/local/bin/bun run start
