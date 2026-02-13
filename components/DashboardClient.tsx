@@ -82,6 +82,10 @@ export default function DashboardClient({ initialWebhooks, initialPagination }: 
         fetchWebhooks(1, search)
     }
 
+    const handleWebhookUpdated = () => {
+        fetchWebhooks(pagination.page, search)
+    }
+
     return (
         <main className="min-h-screen p-8 bg-zinc-50 dark:bg-black font-sans">
             <div className="max-w-5xl mx-auto">
@@ -107,7 +111,7 @@ export default function DashboardClient({ initialWebhooks, initialPagination }: 
                         </div>
                     </div>
                     
-                    <WebhookList webhooks={webhooks} loading={loading} />
+                    <WebhookList webhooks={webhooks} loading={loading} onUpdate={handleWebhookUpdated} onDelete={handleWebhookUpdated} />
                     
                     {pagination.totalPages > 1 && (
                         <div className="flex items-center justify-between mt-6">

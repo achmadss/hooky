@@ -11,7 +11,13 @@ import type { Webhook } from '@prisma/client'
 
 type WebhookWithCount = Webhook & { _count: { requests: number } }
 
-export default function WebhookListItem({ webhook }: { webhook: WebhookWithCount }) {
+interface WebhookListItemProps {
+    webhook: WebhookWithCount
+    onUpdate?: () => void
+    onDelete?: () => void
+}
+
+export default function WebhookListItem({ webhook, onUpdate, onDelete }: WebhookListItemProps) {
     const router = useRouter()
     const [loading, setLoading] = useState(false)
     const [showDeleteModal, setShowDeleteModal] = useState(false)
@@ -34,6 +40,7 @@ export default function WebhookListItem({ webhook }: { webhook: WebhookWithCount
             })
             showToast(`Webhook ${webhook.isEnabled ? 'disabled' : 'enabled'} successfully`, 'success')
             router.refresh()
+            if (onUpdate) onUpdate()
         } catch (error) {
             console.error('Failed to toggle webhook', error)
             showToast('Failed to toggle webhook', 'error')
@@ -51,6 +58,7 @@ export default function WebhookListItem({ webhook }: { webhook: WebhookWithCount
             })
             showToast('Webhook deleted successfully', 'success')
             router.refresh()
+            if (onDelete) onDelete()
         } catch (error) {
             console.error('Failed to delete webhook', error)
             showToast('Failed to delete webhook', 'error')

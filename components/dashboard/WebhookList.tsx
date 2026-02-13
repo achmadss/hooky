@@ -9,9 +9,11 @@ type WebhookWithCount = Webhook & { _count: { requests: number } }
 interface WebhookListProps {
     webhooks: WebhookWithCount[]
     loading?: boolean
+    onUpdate?: () => void
+    onDelete?: () => void
 }
 
-export default function WebhookList({ webhooks, loading = false }: WebhookListProps) {
+export default function WebhookList({ webhooks, loading = false, onUpdate, onDelete }: WebhookListProps) {
     if (loading && webhooks.length === 0) {
         return (
             <div className="flex items-center justify-center py-12">
@@ -35,7 +37,7 @@ export default function WebhookList({ webhooks, loading = false }: WebhookListPr
         <ul className="space-y-4">
             {webhooks.map((webhook) => (
                 <li key={webhook.id}>
-                    <WebhookListItem webhook={webhook} />
+                    <WebhookListItem webhook={webhook} onUpdate={onUpdate} onDelete={onDelete} />
                 </li>
             ))}
         </ul>
