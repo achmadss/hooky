@@ -18,11 +18,11 @@ export default function AnonymousBanner() {
                 {session ? (
                     // Authenticated but webhook not yet claimed — claim prompt will appear automatically
                     <span>
-                        <strong>Webhook not claimed</strong> — requests auto-deleted after 7 days. Claim this webhook to save it permanently.
+                        <strong>Webhook not claimed</strong> — requests auto-deleted after 6 days. Claim this webhook to save it permanently.
                     </span>
                 ) : (
                     <span>
-                        <strong>Anonymous mode</strong> — requests auto-deleted after 7 days.{' '}
+                        <strong>Anonymous mode</strong> — requests auto-deleted after 6 days.{' '}
                         <button
                             onClick={() => setAuthOpen(true)}
                             className="font-semibold underline hover:no-underline"

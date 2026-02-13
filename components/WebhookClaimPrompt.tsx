@@ -82,7 +82,7 @@ export default function WebhookClaimPrompt() {
                         <div className="mb-4">
                             <h2 className="text-xl font-bold text-gray-900 dark:text-white">Save your webhook?</h2>
                             <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                                You have an anonymous webhook that will be deleted in 7 days.
+                                You have an anonymous webhook that will be deleted in 6 days.
                             </p>
                         </div>
 
