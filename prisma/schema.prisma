@@ -44,6 +44,7 @@ model Webhook {
 model Request {
   id            String    @id @default(uuid())
   webhookId     String
+  webhookToken  String    // Token at time of capture (for display purposes)
   method        String
   headers       Json
   queryParams   Json

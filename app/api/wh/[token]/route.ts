@@ -73,6 +73,7 @@ async function handler(request: NextRequest, { params }: { params: Promise<{ tok
   const captured = await prisma.request.create({
     data: {
       webhookId: webhook.id,
+      webhookToken: token,
       method: request.method,
       headers,
       queryParams,

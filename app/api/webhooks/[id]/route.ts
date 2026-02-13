@@ -18,7 +18,7 @@ export async function GET(_req: NextRequest, { params }: Params) {
   return NextResponse.json(full)
 }
 
-// Task 3.7: PATCH /api/webhooks/[id] — update name/isEnabled (authenticated only)
+// Task 3.7: PATCH /api/webhooks/[id] — update name/isEnabled/token (authenticated only)
 export async function PATCH(request: NextRequest, { params }: Params) {
   const { id } = await params
   const { error: authError, userId } = await requireAuth()
@@ -28,13 +28,22 @@ export async function PATCH(request: NextRequest, { params }: Params) {
   if (!webhook) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
   const body = await request.json().catch(() => ({}))
-  const { name, isEnabled } = body as { name?: string; isEnabled?: boolean }
+  const { name, isEnabled, token } = body as { name?: string; isEnabled?: boolean; token?: string }
+
+  // If token is being changed, validate it's unique
+  if (token !== undefined && token !== webhook.token) {
+    const existing = await prisma.webhook.findUnique({ where: { token } })
+    if (existing) {
+      return NextResponse.json({ error: 'Token already in use' }, { status: 409 })
+    }
+  }
 
   const updated = await prisma.webhook.update({
     where: { id },
     data: {
       ...(name !== undefined && { name }),
       ...(isEnabled !== undefined && { isEnabled }),
+      ...(token !== undefined && { token }),
     },
   })
   return NextResponse.json(updated)
