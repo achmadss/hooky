@@ -76,20 +76,107 @@ export default function ResponseConfigPanel({ webhookId, isOwner }: ResponseConf
     }
 
     function handleFormat() {
+        if (contentType === 'text/plain') {
+            setMessage({ type: 'error', text: 'Plain text cannot be formatted' })
+            return
+        }
+
         try {
             if (contentType === 'application/json') {
                 const formatted = JSON.stringify(JSON.parse(body), null, 2)
                 setBody(formatted)
+                setMessage({ type: 'success', text: 'Formatted successfully' })
             } else if (contentType === 'application/xml') {
-                const formatted = body
-                    .replace(/>\s+</g, '><')
-                    .replace(/^(\s*)/gm, (_, spaces) => '  '.repeat(Math.floor(spaces.length / 2)))
+                const formatted = formatXml(body)
                 setBody(formatted)
+                setMessage({ type: 'success', text: 'Formatted successfully' })
+            } else if (contentType === 'text/html') {
+                const formatted = formatHtml(body)
+                setBody(formatted)
+                setMessage({ type: 'success', text: 'Formatted successfully' })
             }
-            setMessage({ type: 'success', text: 'Formatted successfully' })
         } catch {
-            setMessage({ type: 'error', text: 'Invalid content - could not format' })
+            setMessage({ type: 'error', text: `Invalid ${contentType.split('/')[1]} - could not format` })
         }
+    }
+
+    function formatXml(xml: string): string {
+        let formatted = ''
+        let indent = 0
+        const lines = xml.replace(/>\s*</g, '><').split('')
+        
+        for (let i = 0; i < lines.length; i++) {
+            const char = lines[i]
+            
+            if (char === '<') {
+                if (lines[i + 1] === '/') {
+                    indent = Math.max(0, indent - 1)
+                }
+                formatted += '\n' + '  '.repeat(indent) + '<'
+            } else if (char === '>') {
+                formatted += '>'
+                if (lines[i + 1] && lines[i + 1] !== '<') {
+                    if (lines[i + 1] === '/') {
+                        indent = Math.max(0, indent - 1)
+                    } else {
+                        indent++
+                    }
+                }
+            } else if (char !== '\n' && char !== '\r') {
+                formatted += char
+            }
+        }
+        
+        return formatted.trim().split('\n').map((line, idx) => idx === 0 ? line : '  ' + line.trim()).join('\n')
+    }
+
+    function formatHtml(html: string): string {
+        let formatted = ''
+        let indent = 0
+        let inTag = false
+        let inContent = false
+        
+        for (let i = 0; i < html.length; i++) {
+            const char = html[i]
+            
+            if (char === '<') {
+                if (inContent && formatted.length > 0 && !formatted.endsWith('\n')) {
+                    formatted += '\n' + '  '.repeat(indent)
+                }
+                inTag = true
+                inContent = false
+                
+                if (html[i + 1] === '/') {
+                    indent = Math.max(0, indent - 1)
+                }
+                
+                formatted += '\n' + '  '.repeat(indent) + '<'
+            } else if (char === '>') {
+                formatted += '>'
+                inTag = false
+                
+                const nextChars = html.slice(i + 1).trim()
+                if (nextChars.startsWith('</')) {
+                    indent = Math.max(0, indent - 1)
+                } else if (!nextChars.startsWith('<') && nextChars.length > 0) {
+                    inContent = true
+                } else if (!nextChars.startsWith('</') && !nextChars.startsWith('<') && !nextChars.startsWith('!')) {
+                    indent++
+                }
+            } else if (!inTag) {
+                if (char === '\n' || char === '\r' || char === '\t') {
+                    continue
+                }
+                if (inContent && char === ' ') {
+                    continue
+                }
+                formatted += char
+            } else {
+                formatted += char
+            }
+        }
+        
+        return formatted.trim().split('\n').filter(line => line.trim()).join('\n')
     }
 
     // Task 12.5: Save functionality with API integration
