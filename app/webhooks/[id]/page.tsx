@@ -12,13 +12,12 @@ import Link from 'next/link'
 
 interface PageProps {
     params: Promise<{ id: string }>
-    searchParams: Promise<{ requestId?: string; tab?: string }>
+    searchParams: Promise<{ requestId?: string }>
 }
 
 export default async function WebhookDetailPage({ params, searchParams }: PageProps) {
     const { id } = await params
-    const { requestId, tab } = await searchParams
-    const activeTab = tab === 'response' ? 'response' : 'inspector'
+    const { requestId } = await searchParams
 
     const session = await getServerSession(authOptions)
     const anonSessionId = await getAnonymousSessionId()
@@ -92,17 +91,6 @@ export default async function WebhookDetailPage({ params, searchParams }: PagePr
                     isOwner={isOwner}
                 />
 
-                {/* Task 13.3: Tab for Request Inspector */}
-                <div className="flex gap-1 shrink-0">
-                    <Link
-                        href={`/webhooks/${id}${requestId ? `?requestId=${requestId}` : ''}`}
-                        className={`px-3 py-1.5 text-sm rounded-md transition-colors ${activeTab === 'inspector'
-                            ? 'bg-gray-100 dark:bg-zinc-800 text-gray-900 dark:text-white font-medium'
-                            : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'}`}
-                    >
-                        Inspector
-                    </Link>
-                </div>
             </div>
 
             {/* Task 10.8 / 16.7 / 16.8: Anonymous retention warning with Sign Up CTA */}
