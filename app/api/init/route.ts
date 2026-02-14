@@ -28,7 +28,7 @@ async function ensureWebhook() {
     existing = await db.select().from(webhooks).where(eq(webhooks.token, token)).limit(1)
   }
 
-  const result = await db.insert(webhooks).values({ token, sessionId }).returning()
+  const result = await db.insert(webhooks).values({ token, sessionId, visibility: 'public' }).returning()
   return result[0]
 }
 
