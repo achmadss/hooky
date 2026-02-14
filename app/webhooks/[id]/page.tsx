@@ -57,7 +57,7 @@ export default async function WebhookDetailPage({ params, searchParams }: PagePr
             <div className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 sm:px-6 py-2 flex items-center gap-4 shrink-0">
                 {isAuthenticated && (
                     <Link
-                        href="/"
+                        href="/dashboard"
                         className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 shrink-0"
                     >
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
