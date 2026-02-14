@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useSession, signOut } from 'next-auth/react'
 import { useTheme } from 'next-themes'
 import { useState, useRef, useEffect } from 'react'
+import { Zap } from 'lucide-react'
 
 // Task 18.5: Profile Avatar with initials fallback
 function ProfileAvatar({ name, email }: { name?: string | null; email?: string | null }) {
@@ -99,7 +100,7 @@ function ProfileDropdown({ onOpenAuthModal }: { onOpenAuthModal?: (mode?: 'login
                         )}
                     </div>
                     <Link
-                        href="/"
+                        href="/dashboard"
                         onClick={() => setOpen(false)}
                         className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors"
                     >
@@ -128,6 +129,9 @@ export default function GlobalNavbar({ onOpenAuthModal }: { onOpenAuthModal?: (m
     return (
         <nav className="h-14 border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 flex items-center px-4 sm:px-6 justify-between shrink-0 z-40 sticky top-0">
             <Link href="/" className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                    <Zap className="w-5 h-5 text-white" />
+                </div>
                 <span className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">Hooky</span>
             </Link>
             <ProfileDropdown onOpenAuthModal={onOpenAuthModal} />

@@ -52,7 +52,7 @@ export default function DashboardClient({ initialWebhooks, initialPagination }: 
                 newParams.set('search', query)
             }
             newParams.set('page', page.toString())
-            router.push(`/?${newParams.toString()}`, { scroll: false })
+            router.push(`/dashboard?${newParams.toString()}`, { scroll: false })
         } catch (error) {
             console.error('Failed to fetch webhooks', error)
         } finally {

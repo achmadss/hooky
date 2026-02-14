@@ -97,7 +97,7 @@ export default function WebhookDetailActions({
                 method: 'DELETE',
             })
             showToast('Webhook deleted successfully', 'success')
-            router.push('/')
+            router.push('/dashboard')
         } catch (error) {
             console.error('Failed to delete webhook', error)
             showToast('Failed to delete webhook', 'error')

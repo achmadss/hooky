@@ -48,18 +48,18 @@ export default function WebhookClaimPrompt() {
                 // Task 17.8: Redirect to dashboard after claiming
                 setTimeout(() => {
                     setVisible(false)
-                    router.push('/')
+                    router.push('/dashboard')
                 }, 1500)
             }
         } catch { /* ignore */ }
         setLoading(false)
     }
 
-    // Task 17.5: "Keep Anonymous" functionality
+    // Task 17.5: "Skip" functionality
     function handleDecline() {
         setVisible(false)
         // Task 17.8: Redirect to dashboard after declining
-        router.push('/')
+        router.push('/dashboard')
     }
 
     return (
@@ -105,7 +105,7 @@ export default function WebhookClaimPrompt() {
                                 disabled={loading}
                                 className="flex-1 bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-600 hover:bg-gray-50 dark:hover:bg-zinc-700 text-gray-700 dark:text-gray-300 font-medium py-2 px-4 rounded-lg text-sm transition-colors"
                             >
-                                Keep Anonymous
+                                Skip
                             </button>
                         </div>
                     </>

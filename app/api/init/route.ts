@@ -6,7 +6,7 @@ import { db } from '@/lib/db/index'
 import { webhooks } from '@/lib/db/schema'
 import { eq, and, isNull } from 'drizzle-orm'
 
-export async function GET() {
+async function ensureWebhook() {
   const cookieStore = await cookies()
 
   let sessionId = cookieStore.get(ANON_SESSION_COOKIE)?.value
@@ -15,9 +15,7 @@ export async function GET() {
       and(eq(webhooks.sessionId, sessionId), isNull(webhooks.ownerId), isNull(webhooks.deletedAt))
     ).limit(1)
     if (existing[0]) {
-      return NextResponse.redirect(
-        new URL(`/webhooks/${existing[0].id}`, process.env.NEXTAUTH_URL ?? 'http://localhost:3000')
-      )
+      return existing[0]
     }
   }
 
@@ -31,11 +29,27 @@ export async function GET() {
   }
 
   const result = await db.insert(webhooks).values({ token, sessionId }).returning()
-  const webhook = result[0]
+  return result[0]
+}
 
-  const response = NextResponse.redirect(
+export async function GET() {
+  const webhook = await ensureWebhook()
+
+  return NextResponse.redirect(
     new URL(`/webhooks/${webhook.id}`, process.env.NEXTAUTH_URL ?? 'http://localhost:3000')
   )
+}
+
+export async function POST() {
+  const webhook = await ensureWebhook()
+
+  const cookieStore = await cookies()
+  let sessionId = cookieStore.get(ANON_SESSION_COOKIE)?.value
+  if (!sessionId) {
+    sessionId = webhook.sessionId!
+  }
+
+  const response = NextResponse.json({ webhook })
   response.cookies.set(ANON_SESSION_COOKIE, sessionId, anonCookieOptions())
   return response
 }
