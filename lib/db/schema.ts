@@ -13,7 +13,7 @@ export const webhooks = pgTable('webhooks', {
   id: uuid('id').primaryKey().defaultRandom(),
   token: varchar('token', { length: 255 }).unique().notNull(),
   name: varchar('name', { length: 255 }),
-  visibility: varchar('visibility', { length: 20 }).default('private').notNull(),
+  visibility: varchar('visibility', { length: 20 }).default('public').notNull(),
   isEnabled: boolean('is_enabled').default(true).notNull(),
   ownerId: uuid('owner_id').references(() => users.id, { onDelete: 'set null' }),
   sessionId: varchar('session_id', { length: 255 }),
