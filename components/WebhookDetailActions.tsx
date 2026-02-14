@@ -14,6 +14,7 @@ interface WebhookDetailActionsProps {
     webhookName: string | null
     isEnabled: boolean
     isOwner: boolean
+    visibility?: string
 }
 
 export default function WebhookDetailActions({
@@ -22,6 +23,7 @@ export default function WebhookDetailActions({
     webhookName,
     isEnabled,
     isOwner,
+    visibility = 'private',
 }: WebhookDetailActionsProps) {
     const router = useRouter()
     const { showToast } = useToast()
@@ -32,8 +34,7 @@ export default function WebhookDetailActions({
     const [copied, setCopied] = useState(false)
     const [editName, setEditName] = useState(webhookName || '')
     const [editToken, setEditToken] = useState(webhookToken)
-
-    if (!isOwner) return null
+    const [editVisibility, setEditVisibility] = useState(visibility)
 
     const handleCopyUrl = () => {
         const url = `${window.location.origin}/api/wh/${webhookToken}`
@@ -49,7 +50,7 @@ export default function WebhookDetailActions({
             const res = await fetch(`/api/webhooks/${webhookId}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: editName, token: editToken }),
+                body: JSON.stringify({ name: editName, token: editToken, visibility: editVisibility }),
             })
             
             if (!res.ok) {
@@ -123,35 +124,39 @@ export default function WebhookDetailActions({
                     {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
                 </button>
 
-                <button
-                    onClick={openEditModal}
-                    className="p-2 text-zinc-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-md transition-colors"
-                    title="Edit Webhook"
-                >
-                    <Pencil className="w-4 h-4" />
-                </button>
+                {isOwner && (
+                    <>
+                        <button
+                            onClick={openEditModal}
+                            className="p-2 text-zinc-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-md transition-colors"
+                            title="Edit Webhook"
+                        >
+                            <Pencil className="w-4 h-4" />
+                        </button>
 
-                <button
-                    onClick={() => setShowToggleModal(true)}
-                    disabled={loading}
-                    className={cn(
-                        "p-2 rounded-md transition-colors",
-                        isEnabled
-                            ? "text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/20"
-                            : "text-green-500 hover:bg-green-50 dark:hover:bg-green-900/20"
-                    )}
-                    title={isEnabled ? "Disable Webhook" : "Enable Webhook"}
-                >
-                    <Power className="w-4 h-4" />
-                </button>
+                        <button
+                            onClick={() => setShowToggleModal(true)}
+                            disabled={loading}
+                            className={cn(
+                                "p-2 rounded-md transition-colors",
+                                isEnabled
+                                    ? "text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/20"
+                                    : "text-green-500 hover:bg-green-50 dark:hover:bg-green-900/20"
+                            )}
+                            title={isEnabled ? "Disable Webhook" : "Enable Webhook"}
+                        >
+                            <Power className="w-4 h-4" />
+                        </button>
 
-                <button
-                    onClick={() => setShowDeleteModal(true)}
-                    className="p-2 text-zinc-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-colors"
-                    title="Delete Webhook"
-                >
-                    <Trash2 className="w-4 h-4" />
-                </button>
+                        <button
+                            onClick={() => setShowDeleteModal(true)}
+                            className="p-2 text-zinc-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-colors"
+                            title="Delete Webhook"
+                        >
+                            <Trash2 className="w-4 h-4" />
+                        </button>
+                    </>
+                )}
             </div>
 
             <Modal
@@ -188,6 +193,38 @@ export default function WebhookDetailActions({
                         />
                         <p className="text-xs text-zinc-500 mt-1">
                             Token can only contain letters, numbers, and dashes
+                        </p>
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
+                            Visibility
+                        </label>
+                        <div className="flex gap-4">
+                            <label className="flex items-center gap-2 cursor-pointer">
+                                <input
+                                    type="radio"
+                                    name="editVisibility"
+                                    value="private"
+                                    checked={editVisibility === 'private'}
+                                    onChange={() => setEditVisibility('private')}
+                                    className="w-4 h-4 text-blue-600 border-zinc-300 focus:ring-blue-500"
+                                />
+                                <span className="text-sm text-zinc-700 dark:text-zinc-300">Private</span>
+                            </label>
+                            <label className="flex items-center gap-2 cursor-pointer">
+                                <input
+                                    type="radio"
+                                    name="editVisibility"
+                                    value="public"
+                                    checked={editVisibility === 'public'}
+                                    onChange={() => setEditVisibility('public')}
+                                    className="w-4 h-4 text-blue-600 border-zinc-300 focus:ring-blue-500"
+                                />
+                                <span className="text-sm text-zinc-700 dark:text-zinc-300">Public</span>
+                            </label>
+                        </div>
+                        <p className="text-xs text-zinc-500 mt-1">
+                            {editVisibility === 'public' ? 'Anyone can view this webhook details.' : 'Only you can view this webhook.'}
                         </p>
                     </div>
                 </div>

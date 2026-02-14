@@ -1,0 +1,1 @@
+ALTER TABLE "webhooks" ADD COLUMN "visibility" varchar(20) DEFAULT 'private' NOT NULL;

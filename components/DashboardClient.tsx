@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import CreateWebhookForm from '@/components/dashboard/CreateWebhookForm'
 import WebhookList from '@/components/dashboard/WebhookList'
 import { Search, ChevronLeft, ChevronRight } from 'lucide-react'
-import type { Webhook } from '@prisma/client'
+import type { Webhook } from '@/lib/types'
 
 type WebhookWithCount = Webhook & { _count: { requests: number } }
 

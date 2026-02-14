@@ -1,12 +1,12 @@
 import type { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import bcrypt from 'bcryptjs'
-import prisma from '@/lib/db'
+import { db } from '@/lib/db/index'
+import { users } from '@/lib/db/schema'
+import { eq } from 'drizzle-orm'
 
 export const authOptions: NextAuthOptions = {
-  // Task 2.12: Support multiple providers for future OAuth extensibility
   providers: [
-    // Task 2.1: Credentials provider for email/password auth
     CredentialsProvider({
       name: 'credentials',
       credentials: {
@@ -16,21 +16,16 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null
 
-        const user = await prisma.user.findUnique({
-          where: { email: credentials.email.toLowerCase() },
-        })
+        const result = await db.select().from(users).where(eq(users.email, credentials.email.toLowerCase())).limit(1)
+        const user = result[0]
         if (!user || !user.passwordHash) return null
 
-        // Task 2.2: Password hashing using bcryptjs
         const valid = await bcrypt.compare(credentials.password, user.passwordHash)
         if (!valid) return null
 
         return { id: user.id, email: user.email }
       },
     }),
-    // Task 2.11: Additional OAuth providers can be added here without schema changes
-    // e.g. GitHubProvider, GoogleProvider — the User model's `passwordHash` is nullable
-    // to support OAuth-only accounts
   ],
   session: {
     strategy: 'jwt',
@@ -42,10 +37,9 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token }) {
       if (session.user) {
-        // Verify user still exists in database - invalidate session if not
-        const user = await prisma.user.findUnique({ where: { id: token.id as string } })
+        const result = await db.select().from(users).where(eq(users.id, token.id as string)).limit(1)
+        const user = result[0]
         if (!user) {
-          // Return session without user data to force re-authentication
           return { ...session, user: undefined }
         }
         session.user.id = token.id as string
@@ -58,7 +52,6 @@ export const authOptions: NextAuthOptions = {
   },
 }
 
-// Task 2.2: Hash a plaintext password
 export async function hashPassword(password: string): Promise<string> {
   return bcrypt.hash(password, 12)
 }

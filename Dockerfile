@@ -1,4 +1,3 @@
-# Task 19.1: Multi-stage Dockerfile for production builds
 # Stage 1: Install dependencies
 FROM oven/bun:1-alpine AS deps
 WORKDIR /app
@@ -11,9 +10,6 @@ FROM oven/bun:1-alpine AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-
-# Generate Prisma client
-RUN echo 'DATABASE_URL="postgresql://localhost:5432/postgres"' > .env && bunx prisma generate && rm .env
 
 RUN bun run build
 
@@ -32,10 +28,12 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# Copy Prisma files
-COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
+# Copy lib (Drizzle schema)
+COPY --from=builder /app/lib ./lib
+
+# Copy Drizzle config and migrations
+COPY --from=builder /app/drizzle.config.ts ./drizzle.config.ts
+COPY --from=builder /app/drizzle ./drizzle
 
 # Copy custom server
 COPY --from=builder /app/server.ts ./server.ts

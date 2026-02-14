@@ -14,6 +14,7 @@ export default function CreateWebhookForm({ onSuccess }: CreateWebhookFormProps)
     const router = useRouter()
     const [token, setToken] = useState('')
     const [customName, setCustomName] = useState('')
+    const [visibility, setVisibility] = useState<'public' | 'private'>('private')
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
     const [isCustom, setIsCustom] = useState(false)
@@ -65,7 +66,7 @@ export default function CreateWebhookForm({ onSuccess }: CreateWebhookFormProps)
             const res = await fetch('/api/webhooks', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ token, name: customName }),
+                body: JSON.stringify({ token, name: customName, visibility }),
             })
 
             if (!res.ok) {
@@ -146,6 +147,39 @@ export default function CreateWebhookForm({ onSuccess }: CreateWebhookFormProps)
                             placeholder="My Test Webhook"
                             className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-200 transition-colors text-sm text-zinc-900 dark:text-white"
                         />
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
+                            Visibility
+                        </label>
+                        <div className="flex gap-4">
+                            <label className="flex items-center gap-2 cursor-pointer">
+                                <input
+                                    type="radio"
+                                    name="visibility"
+                                    value="private"
+                                    checked={visibility === 'private'}
+                                    onChange={() => setVisibility('private')}
+                                    className="w-4 h-4 text-blue-600 border-zinc-300 focus:ring-blue-500"
+                                />
+                                <span className="text-sm text-zinc-700 dark:text-zinc-300">Private</span>
+                            </label>
+                            <label className="flex items-center gap-2 cursor-pointer">
+                                <input
+                                    type="radio"
+                                    name="visibility"
+                                    value="public"
+                                    checked={visibility === 'public'}
+                                    onChange={() => setVisibility('public')}
+                                    className="w-4 h-4 text-blue-600 border-zinc-300 focus:ring-blue-500"
+                                />
+                                <span className="text-sm text-zinc-700 dark:text-zinc-300">Public</span>
+                            </label>
+                        </div>
+                        <p className="text-xs text-zinc-500 mt-1">
+                            {visibility === 'public' ? 'Anyone can view this webhook details.' : 'Only you can view this webhook.'}
+                        </p>
                     </div>
                 </div>
 

@@ -1,5 +1,5 @@
 import DashboardClient from './DashboardClient'
-import type { Webhook } from '@prisma/client'
+import type { Webhook } from '@/lib/types'
 
 type WebhookWithCount = Webhook & { _count: { requests: number } }
 

@@ -1,6 +1,6 @@
 'use client'
 
-import { Request } from '@prisma/client'
+import { Request } from '@/lib/types'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'

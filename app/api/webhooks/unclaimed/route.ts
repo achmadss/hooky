@@ -1,17 +1,18 @@
 import { NextResponse } from 'next/server'
-import prisma from '@/lib/db'
+import { db } from '@/lib/db/index'
+import { webhooks } from '@/lib/db/schema'
 import { getAnonymousSessionId } from '@/lib/session'
+import { eq, and, isNull } from 'drizzle-orm'
 
-// Task 3.9: GET /api/webhooks/unclaimed — get unclaimed webhook for the current anonymous session
 export async function GET() {
   const anonSessionId = await getAnonymousSessionId()
   if (!anonSessionId) {
     return NextResponse.json({ webhook: null })
   }
 
-  const webhook = await prisma.webhook.findFirst({
-    where: { sessionId: anonSessionId, ownerId: null },
-  })
+  const result = await db.select().from(webhooks).where(
+    and(eq(webhooks.sessionId, anonSessionId), isNull(webhooks.ownerId), isNull(webhooks.deletedAt))
+  ).limit(1)
 
-  return NextResponse.json({ webhook })
+  return NextResponse.json({ webhook: result[0] || null })
 }

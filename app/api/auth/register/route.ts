@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import prisma from '@/lib/db'
+import { db } from '@/lib/db/index'
+import { users } from '@/lib/db/schema'
 import { hashPassword } from '@/lib/auth'
+import { eq } from 'drizzle-orm'
 
 export async function POST(req: NextRequest) {
     const { email, password } = await req.json()
@@ -13,15 +15,13 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: 'Password must be at least 8 characters' }, { status: 400 })
     }
 
-    const existing = await prisma.user.findUnique({ where: { email: email.toLowerCase() } })
-    if (existing) {
+    const existing = await db.select().from(users).where(eq(users.email, email.toLowerCase())).limit(1)
+    if (existing[0]) {
         return NextResponse.json({ error: 'An account with this email already exists' }, { status: 409 })
     }
 
     const passwordHash = await hashPassword(password)
-    await prisma.user.create({
-        data: { email: email.toLowerCase(), passwordHash },
-    })
+    await db.insert(users).values({ email: email.toLowerCase(), passwordHash })
 
     return NextResponse.json({ ok: true }, { status: 201 })
 }

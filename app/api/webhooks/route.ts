@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import prisma from '@/lib/db'
+import { db } from '@/lib/db/index'
+import { webhooks, requests } from '@/lib/db/schema'
 import { requireAuth } from '@/lib/api-auth'
 import { generateToken, sanitizeToken, validateToken } from '@/lib/token'
+import { eq, and, isNull, desc, like, or, sql } from 'drizzle-orm'
 
-// Task 3.5: GET /api/webhooks — list webhooks for authenticated user only
 export async function GET(request: NextRequest) {
   const { error, userId } = await requireAuth()
   if (error) return error
@@ -13,30 +14,35 @@ export async function GET(request: NextRequest) {
   const search = searchParams.get('search') || ''
   const page = parseInt(searchParams.get('page') || '1')
   const limit = parseInt(searchParams.get('limit') || '10')
+  const offset = (page - 1) * limit
 
-  const where = {
-    ownerId: userId,
-    ...(search && {
-      OR: [
-        { token: { contains: search, mode: 'insensitive' as const } },
-        { name: { contains: search, mode: 'insensitive' as const } },
-      ],
-    }),
-  }
+  const where = search
+    ? and(
+        eq(webhooks.ownerId, userId),
+        isNull(webhooks.deletedAt),
+        or(
+          like(webhooks.token, `%${search}%`),
+          like(webhooks.name, `%${search}%`)
+        )
+      )
+    : and(eq(webhooks.ownerId, userId), isNull(webhooks.deletedAt))
 
-  const [webhooks, total] = await Promise.all([
-    prisma.webhook.findMany({
-      where,
-      orderBy: { createdAt: 'desc' },
-      skip: (page - 1) * limit,
-      take: limit,
-      include: { _count: { select: { requests: true } } },
-    }),
-    prisma.webhook.count({ where }),
-  ])
+  const webhooksResult = await db.select().from(webhooks).where(where).orderBy(desc(webhooks.createdAt)).limit(limit).offset(offset)
+
+  const countResult = await db.select({ count: sql<number>`count(*)` }).from(webhooks).where(where)
+  const total = countResult[0]?.count || 0
+
+  const webhooksWithCount = await Promise.all(
+    webhooksResult.map(async (webhook) => {
+      const reqCount = await db.select({ count: sql<number>`count(*)` }).from(requests).where(
+        and(eq(requests.webhookId, webhook.id), isNull(requests.deletedAt))
+      )
+      return { ...webhook, _count: { requests: reqCount[0]?.count || 0 } }
+    })
+  )
 
   return NextResponse.json({
-    webhooks,
+    webhooks: webhooksWithCount,
     pagination: {
       page,
       limit,
@@ -46,7 +52,6 @@ export async function GET(request: NextRequest) {
   })
 }
 
-// Task 3.1: POST /api/webhooks — create webhook (authenticated only)
 export async function POST(request: NextRequest) {
   try {
     const { error, userId } = await requireAuth()
@@ -60,30 +65,32 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
     }
     
-    const { name, token: customToken } = body as { name?: string; token?: string } || {}
+    const { name, token: customToken, visibility } = body as { name?: string; token?: string; visibility?: string } || {}
 
     if (!customToken) {
       return NextResponse.json({ error: 'Token is required' }, { status: 400 })
     }
 
-    // Task 3.3: Sanitize custom token
     const token = sanitizeToken(customToken)
     
-    // Task 3.4: Validate sanitized token
     const { valid, error: tokenError } = validateToken(token)
     if (!valid) {
       return NextResponse.json({ error: tokenError }, { status: 422 })
     }
     
-    // Task 3.4: Unique check
-    const existing = await prisma.webhook.findUnique({ where: { token } })
-    if (existing) {
+    const existing = await db.select().from(webhooks).where(eq(webhooks.token, token)).limit(1)
+    if (existing[0]) {
       return NextResponse.json({ error: 'Token already in use' }, { status: 409 })
     }
 
-    const webhook = await prisma.webhook.create({
-      data: { token, name: name ?? null, ownerId: userId },
-    })
+    const webhookVisibility = visibility === 'public' ? 'public' : 'private'
+    const result = await db.insert(webhooks).values({ 
+      token, 
+      name: name ?? null, 
+      ownerId: userId,
+      visibility: webhookVisibility,
+    }).returning()
+    const webhook = result[0]
 
     return NextResponse.json(webhook, { status: 201 })
   } catch (e) {

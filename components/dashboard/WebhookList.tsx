@@ -1,7 +1,7 @@
 'use client'
 
 import WebhookListItem from './WebhookListItem'
-import type { Webhook } from '@prisma/client'
+import type { Webhook } from '@/lib/types'
 import { Loader2 } from 'lucide-react'
 
 type WebhookWithCount = Webhook & { _count: { requests: number } }

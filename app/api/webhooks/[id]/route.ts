@@ -1,66 +1,84 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import prisma from '@/lib/db'
+import { db } from '@/lib/db/index'
+import { webhooks, requests, responseConfigs } from '@/lib/db/schema'
 import { requireAuth, requireWebhookOwnership } from '@/lib/api-auth'
+import { eq, and, isNull, sql } from 'drizzle-orm'
 
 type Params = { params: Promise<{ id: string }> }
 
-// Task 3.6: GET /api/webhooks/[id] — ownership/session check
 export async function GET(_req: NextRequest, { params }: Params) {
   const { id } = await params
-  const { error, webhook } = await requireWebhookOwnership(id)
+  const { error, webhook: wh } = await requireWebhookOwnership(id)
   if (error) return error
 
-  const full = await prisma.webhook.findUnique({
-    where: { id: webhook!.id },
-    include: { _count: { select: { requests: true } }, responseConfig: true },
-  })
+  const webhookResult = await db.select().from(webhooks).where(
+    and(eq(webhooks.id, wh!.id), isNull(webhooks.deletedAt))
+  ).limit(1)
+  const webhook = webhookResult[0]
+
+  const reqCount = await db.select({ count: sql<number>`count(*)` }).from(requests).where(
+    and(eq(requests.webhookId, webhook.id), isNull(requests.deletedAt))
+  )
+
+  const configResult = await db.select().from(responseConfigs).where(
+    and(eq(responseConfigs.webhookId, webhook.id), isNull(responseConfigs.deletedAt))
+  ).limit(1)
+
+  const full = {
+    ...webhook,
+    _count: { requests: reqCount[0]?.count || 0 },
+    responseConfig: configResult[0] || null,
+  }
   return NextResponse.json(full)
 }
 
-// Task 3.7: PATCH /api/webhooks/[id] — update name/isEnabled/token (authenticated only)
 export async function PATCH(request: NextRequest, { params }: Params) {
   const { id } = await params
   const { error: authError, userId } = await requireAuth()
   if (authError) return authError
 
-  const webhook = await prisma.webhook.findFirst({ where: { id, ownerId: userId } })
+  const webhookResult = await db.select().from(webhooks).where(
+    and(eq(webhooks.id, id), eq(webhooks.ownerId, userId), isNull(webhooks.deletedAt))
+  ).limit(1)
+  const webhook = webhookResult[0]
   if (!webhook) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
   const body = await request.json().catch(() => ({}))
-  const { name, isEnabled, token } = body as { name?: string; isEnabled?: boolean; token?: string }
+  const { name, isEnabled, token, visibility } = body as { name?: string; isEnabled?: boolean; token?: string; visibility?: string }
 
-  // If token is being changed, validate it's unique
   if (token !== undefined && token !== webhook.token) {
-    const existing = await prisma.webhook.findUnique({ where: { token } })
-    if (existing) {
+    const existing = await db.select().from(webhooks).where(eq(webhooks.token, token)).limit(1)
+    if (existing[0]) {
       return NextResponse.json({ error: 'Token already in use' }, { status: 409 })
     }
   }
 
-  const updated = await prisma.webhook.update({
-    where: { id },
-    data: {
-      ...(name !== undefined && { name }),
-      ...(isEnabled !== undefined && { isEnabled }),
-      ...(token !== undefined && { token }),
-    },
-  })
-  return NextResponse.json(updated)
+  const updateData: Record<string, unknown> = {}
+  if (name !== undefined) updateData.name = name
+  if (isEnabled !== undefined) updateData.isEnabled = isEnabled
+  if (token !== undefined) updateData.token = token
+  if (visibility !== undefined) updateData.visibility = visibility === 'public' ? 'public' : 'private'
+
+  const result = await db.update(webhooks).set(updateData).where(eq(webhooks.id, id)).returning()
+  return NextResponse.json(result[0])
 }
 
-// Task 3.8: DELETE /api/webhooks/[id] — soft-delete webhook and its requests (authenticated only)
 export async function DELETE(_req: NextRequest, { params }: Params) {
   const { id } = await params
   const { error: authError, userId } = await requireAuth()
   if (authError) return authError
 
-  const webhook = await prisma.webhook.findFirst({ where: { id, ownerId: userId } })
+  const webhookResult = await db.select().from(webhooks).where(
+    and(eq(webhooks.id, id), eq(webhooks.ownerId, userId), isNull(webhooks.deletedAt))
+  ).limit(1)
+  const webhook = webhookResult[0]
   if (!webhook) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
-  // Soft-delete requests first, then the webhook
-  await prisma.request.deleteMany({ where: { webhookId: id } })
-  await prisma.webhook.delete({ where: { id } })
+  await db.update(requests).set({ deletedAt: new Date() }).where(
+    and(eq(requests.webhookId, id), isNull(requests.deletedAt))
+  )
+  await db.update(webhooks).set({ deletedAt: new Date() }).where(eq(webhooks.id, id))
 
   return new NextResponse(null, { status: 204 })
 }

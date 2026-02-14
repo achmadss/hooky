@@ -7,7 +7,7 @@ import { Copy, Trash2, Power, ExternalLink, AlertTriangle } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useToast } from '@/components/ToastContext'
 import Modal from '@/components/Modal'
-import type { Webhook } from '@prisma/client'
+import type { Webhook } from '@/lib/types'
 
 type WebhookWithCount = Webhook & { _count: { requests: number } }
 

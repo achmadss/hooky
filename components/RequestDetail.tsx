@@ -1,6 +1,6 @@
 'use client'
 
-import { Request } from '@prisma/client'
+import { Request } from '@/lib/types'
 import { useState } from 'react'
 
 // Task 11.8: Copy-to-clipboard button helper

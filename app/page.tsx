@@ -2,39 +2,45 @@ import { redirect } from 'next/navigation'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { getAnonymousSessionId } from '@/lib/session'
-import prisma from '@/lib/db'
+import { db } from '@/lib/db/index'
+import { webhooks, requests } from '@/lib/db/schema'
+import { eq, and, isNull, desc, like, or, sql } from 'drizzle-orm'
 import Dashboard from '@/components/Dashboard'
 
 export default async function Home({ searchParams }: { searchParams: Promise<{ search?: string; page?: string }> }) {
   const { search, page } = await searchParams
   const session = await getServerSession(authOptions)
 
-  // Authenticated users see the management dashboard
   if (session?.user?.id) {
     const pageNum = parseInt(page || '1')
     const limit = 10
     const searchQuery = search || ''
+    const offset = (pageNum - 1) * limit
 
-    const where = {
-      ownerId: session.user.id,
-      ...(searchQuery && {
-        OR: [
-          { token: { contains: searchQuery, mode: 'insensitive' as const } },
-          { name: { contains: searchQuery, mode: 'insensitive' as const } },
-        ],
-      }),
-    }
+    const where = searchQuery
+      ? and(
+          eq(webhooks.ownerId, session.user.id),
+          isNull(webhooks.deletedAt),
+          or(
+            like(webhooks.token, `%${searchQuery}%`),
+            like(webhooks.name, `%${searchQuery}%`)
+          )
+        )
+      : and(eq(webhooks.ownerId, session.user.id), isNull(webhooks.deletedAt))
 
-    const [webhooks, total] = await Promise.all([
-      prisma.webhook.findMany({
-        where,
-        orderBy: { createdAt: 'desc' },
-        skip: (pageNum - 1) * limit,
-        take: limit,
-        include: { _count: { select: { requests: true } } },
-      }),
-      prisma.webhook.count({ where }),
-    ])
+    const webhooksResult = await db.select().from(webhooks).where(where).orderBy(desc(webhooks.createdAt)).limit(limit).offset(offset)
+
+    const countResult = await db.select({ count: sql<number>`count(*)` }).from(webhooks).where(where)
+    const total = countResult[0]?.count || 0
+
+    const webhooksWithCount = await Promise.all(
+      webhooksResult.map(async (wh) => {
+        const reqCount = await db.select({ count: sql<number>`count(*)` }).from(requests).where(
+          and(eq(requests.webhookId, wh.id), isNull(requests.deletedAt))
+        )
+        return { ...wh, _count: { requests: reqCount[0]?.count || 0 } }
+      })
+    )
 
     const pagination = {
       page: pageNum,
@@ -43,22 +49,19 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ s
       totalPages: Math.ceil(total / limit),
     }
 
-    return <Dashboard webhooks={webhooks} pagination={pagination} />
+    return <Dashboard webhooks={webhooksWithCount} pagination={pagination} />
   }
 
   const anonSessionId = await getAnonymousSessionId()
 
   if (anonSessionId) {
-    // Check for existing anonymous webhook
-    const existing = await prisma.webhook.findFirst({
-      where: { sessionId: anonSessionId, ownerId: null },
-    })
-    if (existing) {
-      redirect(`/webhooks/${existing.id}`)
+    const existing = await db.select().from(webhooks).where(
+      and(eq(webhooks.sessionId, anonSessionId), isNull(webhooks.ownerId), isNull(webhooks.deletedAt))
+    ).limit(1)
+    if (existing[0]) {
+      redirect(`/webhooks/${existing[0].id}`)
     }
   }
 
-  // No session or session with no webhook — Route Handler sets the cookie and creates the webhook
-  // (Cookies cannot be set in Server Components, only in Route Handlers)
   redirect('/api/init')
 }

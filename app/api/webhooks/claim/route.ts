@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import prisma from '@/lib/db'
+import { db } from '@/lib/db/index'
+import { webhooks } from '@/lib/db/schema'
 import { requireAuth } from '@/lib/api-auth'
 import { getAnonymousSessionId } from '@/lib/session'
+import { eq, and, isNull } from 'drizzle-orm'
 
-// Task 3.10: POST /api/webhooks/claim — transfer anonymous webhook to authenticated user
 export async function POST(_request: NextRequest) {
   const { error, userId } = await requireAuth()
   if (error) return error
@@ -14,17 +15,16 @@ export async function POST(_request: NextRequest) {
     return NextResponse.json({ error: 'No anonymous session found' }, { status: 400 })
   }
 
-  const webhook = await prisma.webhook.findFirst({
-    where: { sessionId: anonSessionId, ownerId: null },
-  })
+  const result = await db.select().from(webhooks).where(
+    and(eq(webhooks.sessionId, anonSessionId), isNull(webhooks.ownerId), isNull(webhooks.deletedAt))
+  ).limit(1)
+  const webhook = result[0]
+
   if (!webhook) {
     return NextResponse.json({ error: 'No unclaimed webhook found for this session' }, { status: 404 })
   }
 
-  const claimed = await prisma.webhook.update({
-    where: { id: webhook.id },
-    data: { ownerId: userId, sessionId: null },
-  })
+  const updated = await db.update(webhooks).set({ ownerId: userId, sessionId: null }).where(eq(webhooks.id, webhook.id)).returning()
 
-  return NextResponse.json(claimed)
+  return NextResponse.json(updated[0])
 }
